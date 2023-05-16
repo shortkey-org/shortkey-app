@@ -1,0 +1,194 @@
+.shortkey-search-section {
+    position: absolute;
+    top: 36%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+
+    @include media('<500px') {
+        &.mobileFindBar {
+            position: fixed;
+            z-index: 999;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #fff;
+            transform: none;
+
+            > div {
+                .logoContainer {
+                    display: none;
+                }
+
+                .findbar,.results {
+                    width: 100%;
+                    max-width: 100%;
+                    margin: 0;
+                    border-radius: 0;
+                    border: none;
+                    border-bottom: 1px solid #dddddd;
+                    box-shadow: none;
+
+                    .quickSetting {
+                        display: none;
+                    }
+                }
+
+                .results {
+                    border-bottom: none;
+                }
+            }
+        }
+    }
+
+    > div {
+        width: 100%;
+        height: 100%;
+
+        .logo {
+            height: 70px;
+        }
+
+        .findbar,.results {
+            width: calc(100% - 80px);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .results {
+            margin-top: 10px;
+        }
+    }
+
+    @include media('<560px') {
+        > div {
+            .logo {
+                height: 60px;
+            }
+            .findbar,.results {
+                width: calc(100% - 60px);
+            }
+        }
+    }
+
+    @include media('<320px') {
+        > div {
+            .logo {
+                height: 50px;
+            }
+        }
+    }
+}
+
+.results {
+    width: auto;
+    height: auto;
+    border-radius: 15px;
+    padding: 4px;
+    background-color: var(--color-white);
+    border: 1px solid #dddddd;
+    box-shadow: 4px 8px 8px 7px rgba(0, 0, 0, 0.01);
+    overflow: hidden;
+
+    > .inner-results {
+        width: 100%;
+        height: 100%;
+
+        display: -webkit-flex;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+
+        > .result {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #f2f2f2;
+            }
+
+            padding: 0 8px;
+
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+
+            > div {
+                display: -webkit-flex;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: center;
+
+                img {
+                    height: 28px;
+                    width: 28px;
+                    border-radius: 32px;
+                    margin-right: 12px;
+                }
+
+                > span {
+                    margin-right: 12px;
+
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.findbar {
+    width: auto;
+    height: 50px;
+    border-radius: 15px;
+    background-color: var(--color-white);
+    border: 1px solid #dddddd;
+    color: var(--color-slate-gray);
+    box-shadow: 4px 8px 8px 7px rgba(0, 0, 0, 0.01);
+
+    overflow: hidden;
+
+    > .inner-findbar {
+        width: 100%;
+        height: 100%;
+
+        display: -webkit-flex;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+
+        > div {
+            width: 100%;
+            height: 100%;
+
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+
+            &.autoW {
+                width: auto;
+                padding-right: 8px;
+            }
+
+            > input {
+                width: 100%;
+                height: 100%;
+                font-size: 17px;
+                border: none;
+                padding-left: 16px;
+                color: var(--color-deep-violet);
+            }
+        }
+    }
+}

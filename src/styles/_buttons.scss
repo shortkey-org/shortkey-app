@@ -1,0 +1,122 @@
+.btn {
+    width: auto;
+
+    &.block {
+        width: 100%;
+    }
+    
+    &.t1 {
+        height: 54px;
+        background-color: var(--color-deep-violet);
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0px 3px 12px rgba(74, 58, 255, 0.18);
+        cursor: pointer;
+
+        transition: background-color 0.2s ease-in;
+
+        &:hover {
+            background-color: var(--color-deep-violet-alt);
+        }
+
+        > span {
+            color: var(--color-white);
+            font-size: 16px;
+            font-weight: 500;
+        }
+    }
+
+    &.t2 {
+        height: 40px;
+        padding: 0 20px;
+        background: rgba(255, 255, 255, 1);
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+
+        display: -webkit-flex;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+
+        transition: background-color 0.2s, box-shadow 0.1s ease-out;
+
+        &.tc {
+            width: 200px;
+            justify-content: center;
+        }
+
+        &:hover
+        {
+            background-color: rgb(247, 247, 247);
+        }
+
+        &:focus
+        {
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(0, 0, 0, 0.2);
+        }
+
+        > span {
+            color: var(--color-deep-violet);
+            font-size: 16px;
+            font-weight: 500;
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100%;
+        }
+    }
+}
+
+.btnIco {
+    width: 36px;
+    height: 36px;
+
+    &.szSmall {
+        width: 28px;
+        height: 28px;
+    }
+
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    background-color: transparent;
+    border-radius: 36px;
+    border: none;
+    cursor: pointer;
+
+    transition: background-color 0.1s ease, opacity 0.1s ease;
+
+    &.icoB {
+        height: 40px;
+        width: 40px;
+        border-radius: 8px;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+
+    &:hover {
+        background-color: #f5f5f5;
+
+        &.--noHoverEffect {
+            background-color: transparent;
+            opacity: 0.6;
+        }
+    }
+
+    > span {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        display: -webkit-flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+}

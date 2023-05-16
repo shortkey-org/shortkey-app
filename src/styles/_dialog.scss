@@ -1,0 +1,84 @@
+.dialog-back {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 5%);
+
+    &.-hidden {
+        display: none;
+    }
+
+    dialog {
+        position: absolute;
+        border-radius: var(--border-radius-round);
+        background-color: var(--color-white);
+        border: 1px solid #D9DBE9;
+        box-shadow: 0px 14px 42px rgba(8, 15, 52, 0.06);
+        overflow: hidden;
+
+        &.__tab-dStart {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            height: auto;
+            max-height: 90vh;
+            min-height: 80px;    
+        }
+
+        &.__tab-dCookies {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            height: auto;
+            max-height: 90vh;
+            min-height: 80px;    
+        }
+
+        &.__tab-dTerms {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            height: auto;
+            max-height: 90vh;
+            min-height: 80px;    
+        }
+
+        &.__tab-dViewShortkey,&.__tab-dAddShortkey {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 550px;
+            height: auto;
+            max-height: 90vh;
+            min-height: 80px;
+        }
+
+        > div {
+            width: 100%;
+            height: 100%;
+            max-height: calc(90vh - 60px);
+            overflow-y: auto;
+
+            > .hdrDialog {
+                width: 100%;
+                height: 60px;
+                padding: 0 10px;
+                
+                &._abs {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                }
+            }
+        }
+    }
+}

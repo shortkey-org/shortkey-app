@@ -1,0 +1,476 @@
+.skey-sidebar-menu-fallback
+{
+    z-index: 999;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    display: none;
+
+    &.--active
+    {
+        display: block;
+    }
+
+    .skey-sidebar-menu
+    {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 500px;
+        height: 100vh;
+        background-color: #ffffff;
+        box-shadow: -2px 0 12px -6px rgba(0, 0, 0, 0.4);
+
+        transform: translateX(100%);
+        transition: transform 0.2s ease;
+
+        @include media('<540px')
+        {
+            width: 100%;
+        }
+
+        &.--active
+        {
+            transform: translateX(0%);
+        }
+    
+        > .inner-sidebar-menu
+        {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: auto;
+            scroll-behavior: smooth;
+
+            display: flex;
+            display: -webkit-flex;
+            flex-direction: column;
+
+            $wrp-width: 100%;
+
+            > .sidebar-header
+            {
+                width: 100%;
+                height: 58px;
+                padding: 10px 0;
+                position: sticky;
+                position: -webkit-sticky;
+                top: 0;
+
+                > .inner-ct
+                {
+                    width: $wrp-width;
+                
+                    &.-wrp-90
+                    {
+                        width: 90%;
+                    }
+
+                    &.-wrp-95
+                    {
+                        width: 95%;
+                    }
+                }
+            }
+
+            > .sidebar-ct
+            {
+                width: 100%;
+                height: auto;
+
+                > .inner-sidebar-ct
+                {
+                    width: 100%;
+                    height: 100%;
+
+                    margin: 0 auto;
+
+                    display: -webkit-flex;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+
+                    &.-wrp-80
+                    {
+                        width: 80%;
+                    }
+                }
+
+                &.sidebar-footer
+                {
+                    position: absolute;
+                    bottom: 0;
+                    height: auto;
+                    padding: 8px 0;
+
+                    @include media('<440px')
+                    {
+                        bottom: 70px;
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+.inner-sidebar-ct
+{
+
+    form
+    {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        display: -webkit-flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    &.--adapt-desktop
+    {
+        display: flex;
+        display: -webkit-flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-wrap: wrap;
+
+        .cs-sidebar-ft-btn
+        {
+            margin: 4px 6px;
+            height: fit-content;
+
+            &:first-child
+            {
+                margin-left: 0;
+            }
+
+            &:last-child
+            {
+                margin-right: 0;
+            }
+        }
+    }
+
+}
+
+
+.mb-10
+{
+    margin-bottom: 10px;
+}
+
+.mb-20
+{
+    margin-bottom: 20px;
+}
+
+.mr-10
+{
+    margin-right: 10px;
+}
+
+.mr-3
+{
+    margin-right: 3px;
+}
+
+.ml-8
+{
+    margin-left: 8px;
+}
+
+.--red-txt
+{
+    color: rgb(153, 64, 64);
+}
+
+.--head-txt
+{
+    color: rgba(93, 54, 109, 1);
+}
+
+.--hint-txt
+{
+    color: rgba(93, 54, 109, 0.6);
+    font-size: 11px !important;
+}
+
+.mt-10
+{
+    margin-top: 10px;
+}
+
+.mt-20
+{
+    margin-top: 20px;
+}
+
+.mr-10
+{
+    margin-right: 10px;
+}
+
+
+.--vote-count
+{
+    font-size: 18px !important;
+    color: rgb(93, 54, 109);
+}
+
+.mb-4
+{
+    margin-bottom: 4px;
+}
+
+.cs-sidebar-ft-btn
+{
+    padding: 0 !important;
+    background-color: transparent;
+    flex-direction: row-reverse !important;
+    justify-content: space-between !important;
+    opacity: 1;
+    transition: opacity 0.2s ease !important;
+
+    &:hover
+    {
+        background-color: transparent !important;
+        opacity: 0.6;
+    }
+}
+
+.cs-sidebar-back-btn
+{
+    // opacity: 1;
+    // transition: opacity 0.2s ease !important;
+
+    .ic-container
+    {
+        transform: rotate(180deg);
+    }
+
+    .text
+    {
+        font-weight: 500;
+    }
+
+    &:hover
+    {
+        background-color: #ffffff !important;
+        opacity: 1 !important;
+    }
+
+    &:hover > *
+    {
+        opacity: 0.6;
+    }
+
+}
+
+
+.cs-flexbox
+{
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    &.--l
+    {
+        justify-content: flex-start;
+    }
+
+    &.--r
+    {
+        justify-content: flex-end;
+    }
+}
+
+.feature-list
+{
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: auto;
+    background-color: rgba(93, 54, 109, 0.2);
+    border-radius: 40px;
+    padding: 4px 16px;
+
+    .ic path
+    {
+        fill: rgb(93, 54, 109);
+    }
+
+    .text
+    {
+        color: rgb(93, 54, 109);
+    }
+
+    &.--flexible
+    {
+        flex-wrap: wrap;
+        border-radius: 12px;
+        padding: 8px 16px;
+        width: 100%;
+    }
+}
+
+
+.skeys-hdr-container
+{
+    width: 100%;
+    height: auto;
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    > div
+    {
+        width: 100%;
+        height: 100%;
+
+        &.--auto-w
+        {
+            width: auto;
+            margin-left: 12px;
+        
+            .btn-add-skey
+            {
+                width: 36px;
+                max-width: 36px;
+                padding: 0;
+            }
+        }
+    }
+}
+
+.text.fs-h1
+{
+    font-size: 22px;
+    font-weight: 600;
+    color: rgb(93, 54, 109);
+}
+
+.text.primary
+{
+    color: rgb(93, 54, 109);
+}
+
+.w-100p
+{
+    width: 100%;
+}
+
+
+.accordion-xx
+{
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.07);
+    cursor: pointer;
+    opacity: 0.7;
+    padding-bottom: 8px;
+
+    &:hover
+    {
+        opacity: 1;
+        box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
+    }
+
+    > .main_content
+    {
+        display: none;
+        opacity: 0;
+        height: 0;
+    }
+
+    &.--opened
+    {
+        opacity: 1;
+        box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
+        padding-bottom: 0;
+        cursor: default;
+
+        > .main_handler
+        {
+            cursor: pointer;
+            opacity: 0.9;
+            padding-bottom: 8px;        
+            box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.07);
+        }
+    
+        > .main_content
+        {
+            display: block;
+            padding: 4px 0;
+            padding-bottom: 6px;
+            margin: 0 auto;
+            width: calc(100% - 10px);
+            height: auto;
+            opacity: 1;
+        }
+    }
+}
+
+.mb-4
+{
+    margin-bottom: 4px;
+}
+
+.mt-4
+{
+    margin-top: 4px;
+}
+
+.ml-4
+{
+    margin-left: 4px;
+}
+
+
+.tags-container
+{
+    width: auto;
+    height: auto;
+
+    display: -webkit-flex;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+    > div
+    {
+        width: auto;
+        padding: 2px 8px;
+        // background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgb(242, 213, 253);
+        border-radius: 6px;
+        margin: 4px;
+        cursor: pointer;
+
+        &:hover
+        {
+            background-color: rgba(163, 2, 2, 0.1);
+        }
+
+        > .text
+        {
+            font-size: 13px;
+            color: rgb(93, 54, 109);
+        }
+    }
+}
