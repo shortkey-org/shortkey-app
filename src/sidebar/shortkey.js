@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import PopupMenu from "../components/PopupMenu";
 import { useAuth } from "../contexts/AuthCtx";
-import { useUI } from "../contexts/UICtx";
+import { useSk } from "../contexts/SkCtx";
+import { DialogTabList, useUI } from "../contexts/UICtx";
 import MoreIcon from "../icons/More";
 
 const Shortkey = ({
@@ -13,6 +14,7 @@ const Shortkey = ({
 }) => {
     const authCtx = useAuth();
     const uiCtx = useUI();
+    const skCtx = useSk();
 
     const [menuPopupVisible, setMenuPopupVisible] = useState(false);
     const [menuPopupPos, setMenuPopupPos] = useState({ top: 0, right: 0 });
@@ -51,15 +53,13 @@ const Shortkey = ({
 
     const handleOnEditClick = (e) => {
         uiCtx.setData({
-            active_shortkey: skey,
-            active_shortkey_type: type,
+            editShortkeyData: skey
         });
-        // uiCtx.setSidemenuTab(SidebarTabsList.EditShortkey);
-    }
-
-    const callback = (e) => {
-        /** trigger refresh */
-        // skCtx.reloadShortkeys();
+        uiCtx.setAny({
+            dialog_visible: true,
+            dialog_active_tab: DialogTabList.EditShortkey
+        });
+        setMenuPopupVisible(false);
     }
 
     const handleOnDeleteClick = async (e) => {
@@ -68,21 +68,8 @@ const Shortkey = ({
         }
         else {
             setMenuPopupVisible(false);
-            /** delete */
-            // let res = await skCtx.deleteShortkey({
-            //     id: skey.id,
-            //     type: type
-            // }, callback);
-
-            // /** trigger refresh */
-            // if (authCtx.account_type === AccountType.Remote && res && type === ShortkeyType.Remote) {
-            //     // skCtx.reloadShortkeys();
-            // }
+            skCtx.deleteShortkey(skey);
         }
-    }
-
-    const handleAddToCommunikeyClick = (e) => {
-
     }
 
     return (
@@ -123,12 +110,12 @@ const Shortkey = ({
                             }
 
                             if (i === 3) {
-                                return (<div key={i} className="r r2 --tag">
+                                return (<div key={i} className="r r2 sk-tag">
                                     <span className="text">{`+${skey.tags.length - i}`}</span>
                                 </div>);
                             }
 
-                            return (<div key={i} className="r r2 --tag">
+                            return (<div key={i} className="r r2 sk-tag">
                                 <span className="text">{tag}</span>
                             </div>);
 
@@ -155,6 +142,20 @@ const Shortkey = ({
                     position={menuPopupPos}
                     style={{ width: 240 }}
                     onClose={handleMenuPopupClose}>
+                        
+                        <div
+                            onClick={handleOnEditClick}
+                            className="popupButton">
+                                <span>Edit</span>
+                        </div>
+
+                        <div className="--seprator"></div>
+
+                        <div
+                            onClick={handleOnDeleteClick}
+                            className="popupButton">
+                                {deleteActive ? <span style={{color: 'rgb(195 37 37)'}}>Are you sure?</span> : <span>Delete</span>}
+                        </div>
 
 
                     {/* <Button onClick={handleOnEditClick} type={ButtonTypes.normal_noborder} icon={IconsList.Edit} className={'--align-left mb-4 --block-size'} text={`Edit`} />

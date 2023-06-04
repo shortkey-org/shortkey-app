@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useReducer, useState } from "reac
 import { useCookies } from 'react-cookie';
 import Settings from "../classes/Settings";
 import { CookiesArray, CookiesList, LocalStorageKeys } from "../constants/cookies";
+import { BackgroundImagesAvailable } from "../sidebar/settings";
 import { useUI, DialogTabList } from "./UICtx";
 
 export const AccountType = {
@@ -15,7 +16,7 @@ const defaultSettings = {
     hideProductHunt: false,
     minimalistic: false,
     enableBackgroundPicture: false,
-    backgroundPicture: 'https://shortkey.org/favicon/favicon-16x16.png'
+    backgroundPicture: BackgroundImagesAvailable[0]
 }
 
 export const SettingKey = {
@@ -30,6 +31,11 @@ export const SettingKey = {
 const initialState = {
     authenciated: false,
     initialized: false,
+    cookies: {
+        essential: true,
+        other: true,
+        analytical: false
+    },
     account: null,
     account_type: -1,
     setting: {
@@ -87,6 +93,15 @@ function AuthProvider({ children }) {
         other: true,
         analytical: false
     })
+
+    useEffect(() => {
+        dispatch({
+            type: "DATA",
+            payload: {
+                cookies: cookiesToDeploy
+            }
+        })
+    }, [cookiesToDeploy]);
 
     const getAccessToken = () => {
         return cookies[CookiesList.AccessToken];
@@ -173,11 +188,15 @@ function AuthProvider({ children }) {
     }
 
     const deployOtherCookies = () => {
-        setCookie(CookiesList.OtherCookies, 1, getExpirationTime());
+        setCookie(CookiesList.OtherCookies, 1, {
+            expires: getExpirationTime()
+        });
     }
 
     const deployAnalyticalCookies = () => {
-        setCookie(CookiesList.AnalyticalCookies, 1, getExpirationTime());
+        setCookie(CookiesList.AnalyticalCookies, 1, {
+            expires:getExpirationTime()
+        });
     }
 
     const deployCookies = () => {
@@ -222,7 +241,9 @@ function AuthProvider({ children }) {
     const activateGuestMode = () => {
         localStorage.setItem(CookiesList.AccessTokenLocal, "1");
         deployCookies();
-        setCookie(CookiesList.LocalFeatureUsageAlert, 1, getExpirationTime());
+        setCookie(CookiesList.LocalFeatureUsageAlert, 1, {
+            expires: getExpirationTime()
+        });
         initDefaultLocalSetting();
         let settings = loadLocalSetting();
         dispatchInitializationComplete({
@@ -242,6 +263,19 @@ function AuthProvider({ children }) {
         return () => { };
 
     }, []);
+
+    // useEffect(() => {
+    //     if(state.setting)
+    //     {
+    //         if(state.setting.enableBackgroundPicture && state.setting.backgroundPicture) {
+    //             document.querySelector("body").style.backgroundImage = `url(${state.setting.backgroundPicture})`;
+    //         }
+    //         else
+    //         {
+    //             document.querySelector("body").style.background = '#fff';
+    //         }
+    //     }
+    // }, [state.setting]);
 
 
     return (

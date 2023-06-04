@@ -1,5 +1,6 @@
 import { useAuth } from "../contexts/AuthCtx";
 import { useUI } from "../contexts/UICtx";
+import EventsListIcon from "../icons/EventsList";
 import MenuIcon from "../icons/Menu";
 import SettingIcon from "../icons/Setting";
 import { SidemenuTabs } from "../sidebar";
@@ -27,7 +28,7 @@ export default function Header() {
                 <div
                     className="cH100p cFlex row jsb acenter">
 
-                    {!authCtx.setting.hideProductHunt && <div
+                    {/* {!authCtx.setting.hideProductHunt && <div
                         className="__product_hunt cH100p cFlex row jstart acenter">
 
                         <svg
@@ -69,7 +70,14 @@ export default function Header() {
                             </defs>
                         </svg>
 
-                    </div>}
+                    </div>} */}
+
+                    <button
+                        className="btnIco">
+                        <span>
+                            <EventsListIcon />
+                        </span>
+                    </button>
 
                     <div className="dummy"></div>
 

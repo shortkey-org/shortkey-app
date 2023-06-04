@@ -5,7 +5,7 @@ const CheckboxControl = ({ isChecked = false, centerLabel = false, label = null,
             <div
                 className={("label-item") + (centerLabel ? " --center" : "")}>
                 <div className="label">
-                    <span className="fs20B fCBody lH25">{label}</span>
+                    <span className="fs20B lH25 fCPrimary">{label}</span>
                 </div>
                 <div className="desc">
                     <p className="fs20 fCBody lH25">{desc}</p>

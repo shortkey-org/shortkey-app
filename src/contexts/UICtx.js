@@ -10,14 +10,18 @@ export const DialogTabList = {
     Start: "dStart",
     Cookies: "dCookies",
     Terms: "dTerms",
+    Privacy: "dPrivacy",
     ViewShortkey: "dViewShortkey",
-    AddShortkey: "dAddShortkey"
+    AddShortkey: "dAddShortkey",
+    EditShortkey: "dEditShortkey",
+    Loading: "dLoading"
 }
 
 const initialState = {
     initialized: false,
     sidemenu_active: false,
     sidemenu_fallback_active: false,
+    sidemenu_close_on_outer_click: true,
     sidemenu_tab: null,
     sidemenu_last_tab: null,
     dialog_visible: false,
@@ -102,26 +106,27 @@ function UIProvider({ children }) {
     const [isOnline, setIsOnline] = useState(navigator.onLine);
 
     useEffect(() => {
-
-        const handleStatusChange = () => {
-            setIsOnline(navigator.onLine);
-            dispatch({
-                type: "ONLINE",
-                payload: {
-                    isOnline: navigator.onLine
-                }
-            });
-        };
-
-        window.addEventListener('online', handleStatusChange);
-        window.addEventListener('offline', handleStatusChange);
-
-        return () => {
-            window.removeEventListener('online', handleStatusChange);
-            window.removeEventListener('offline', handleStatusChange);
-        };
-
-    }, [isOnline]);
+        if((state.dialog_active_tab === DialogTabList.AddShortkey || state.dialog_active_tab === DialogTabList.EditShortkey) && state.dialog_visible) {
+            if(state.sidemenu_close_on_outer_click) {
+                dispatch({
+                    type: 'ANY',
+                    payload: {
+                        sidemenu_close_on_outer_click: false
+                    }
+                })
+            }
+        }
+        else {
+            if(!state.sidemenu_close_on_outer_click) {
+                dispatch({
+                    type: 'ANY',
+                    payload: {
+                        sidemenu_close_on_outer_click: true
+                    }
+                })
+            }
+        }
+    }, [state]);
 
     const setSidemenuTab = async (tab) => {
         dispatch({

@@ -18,7 +18,7 @@ export default function Sidebar()
 
     useOnClickOutside(refSidebar, ((e) => {
         uiCtx.setSidemenuVisibility(false);
-    }), () => {}, uiCtx.sidemenu_active && uiCtx.sidemenu_fallback_active);
+    }), () => {}, uiCtx.sidemenu_active && uiCtx.sidemenu_fallback_active && uiCtx.sidemenu_close_on_outer_click);
 
     useOnEscape((e) => {
         uiCtx.setSidemenuVisibility(false);

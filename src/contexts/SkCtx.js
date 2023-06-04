@@ -4,6 +4,7 @@ import { AccountType, useAuth } from "./AuthCtx";
 
 import { v4 as uuid } from 'uuid';
 import Settings from "../classes/Settings";
+import { searchJumpsData } from "../api/data";
 
 const initialState = {
 
@@ -19,6 +20,9 @@ const initialState = {
 
     queryResults: [],
     queryActive: false,
+
+    jumpsResults: [],
+    jumpsActive: false,
 
     searchOffset: 0,
     searchLimit: 20
@@ -44,6 +48,8 @@ const reducer = (state, action) => (handlers[action.type] ? handlers[action.type
 const SkContext = createContext({
     ...initialState,
     addShortkey: async (shortkey, url, tags) => {},
+    deleteShortkey: async (shortkey) => {},
+    updateShortkey: async (shortkey) => {},
     searchShortkeys: async (query, next = false) => {},
     findShortkeys: async (query) => {}
 });
@@ -213,6 +219,17 @@ function SkProvider({ children }) {
         refreshShortkeys();
     }
 
+    const updateShortkey = async (shortkey) => {
+        ShortkeyManager.updateShortkey(shortkey);
+        refreshShortkeys();
+    }
+
+    /** shortkey is object contains id too */
+    const deleteShortkey = async (shortkey) => {
+        ShortkeyManager.deleteShortkey(shortkey);
+        refreshShortkeys();
+    }
+
     const searchShortkeys = async (query, next = false) => {
         
         if(query.length < 1)
@@ -257,6 +274,8 @@ function SkProvider({ children }) {
                 type: 'DATA',
                 payload: {
                     queryResults: [],
+                    jumpsResults: [],
+                    jumpsActive: false,
                     queryActive: false
                 }
             });
@@ -264,15 +283,42 @@ function SkProvider({ children }) {
             return;
         }
 
-        let results = ShortkeyManager.findShortkeys(query);
+        const searchInJumps = async () => {
+            let results = await searchJumpsData(query);
+            dispatch({
+                type: 'DATA',
+                payload: {
+                    jumpsResults: results,
+                    jumpsActive: true,
+                    queryResults: [],
+                    queryActive: false
+                }
+            });
+        }
 
-        dispatch({
-            type: 'DATA',
-            payload: {
-                queryResults: results,
-                queryActive: true
+        if(query[0] !== '!')
+        {
+            let results = ShortkeyManager.findShortkeys(query);
+
+            if(results.length < 1)
+            {
+                searchInJumps();
             }
-        });
+            else
+            {
+                dispatch({
+                    type: 'DATA',
+                    payload: {
+                        queryResults: results,
+                        queryActive: true
+                    }
+                });    
+            }
+        }
+        else
+        {
+            searchInJumps();
+        }
     }
 
     return (
@@ -280,6 +326,8 @@ function SkProvider({ children }) {
             value={{
                 ...state,
                 addShortkey,
+                deleteShortkey,
+                updateShortkey,
                 searchShortkeys,
                 findShortkeys
             }}>

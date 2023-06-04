@@ -2,6 +2,7 @@
 @import 'vars';
 @import 'fonts';
 @import 'colors';
+@import 'loading';
 
 * {
     padding: 0;
@@ -27,6 +28,12 @@ textarea {
 
 *:focus {
     outline: none;
+}
+
+body {
+    height: 100vh;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 @import 'container';

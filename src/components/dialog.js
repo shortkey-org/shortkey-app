@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../contexts/AuthCtx";
 import { useSk } from "../contexts/SkCtx";
 import { DialogTabList, useUI } from "../contexts/UICtx";
@@ -9,7 +9,8 @@ import CloseIcon from "../icons/Close";
 import DeleteIcon from "../icons/Delete";
 import CheckboxControl from "./checkbox";
 import Input from "./input";
-
+import {useNavigate} from 'react-router-dom';
+import { useOnClickOutside } from "../hooks/useOnClickOutside";
 
 const StartUseDialog = () => {
 
@@ -128,8 +129,20 @@ export const CookiesOptionsDialog = () => {
     const handlePrivacy = (e) => {
         e.preventDefault();
         uiCtx.setAny({
-            dialog_active_tab: DialogTabList.Terms
+            dialog_active_tab: DialogTabList.Privacy
         });
+    }
+
+    const handleClose = (e) => {
+        e.preventDefault();
+        /**
+         * Set Account type local
+         * Deploy cookies
+         */
+        authCtx.activateGuestMode();
+        uiCtx.setAny({
+            dialog_visible: false
+        })
     }
 
     const handleTerms = (e) => {
@@ -160,7 +173,8 @@ export const CookiesOptionsDialog = () => {
 
                 <div>
                     <button
-                        className="btnIco --noHoverEffect">
+                        className="btnIco --noHoverEffect"
+                        onClick={handleClose}>
                         <span>
                             <CloseIcon />
                         </span>
@@ -174,17 +188,17 @@ export const CookiesOptionsDialog = () => {
                 <div
                     style={{ padding: '8px 16px' }}
                     className="col cW100p cFlex row jcenter acenter">
-                    <CheckboxControl onChange={handleCheck("essential")} label={"Essential cookies"} desc={"enable authentification, navigation, and other core functions. Disabling such cookies may affect how Shortkey websites and services technically operate. That's why essential cookies are enabled by default."} disabled={true} isChecked={true} />
+                    <CheckboxControl onChange={handleCheck("essential")} label={"Essential cookies"} desc={"enable authentification, navigation, and other core functions. Disabling such cookies may affect how Shortkey websites and services technically operate. That's why essential cookies are enabled by default."} disabled={true} isChecked={authCtx.cookies.essential} />
                 </div>
                 <div
                     style={{ padding: '8px 16px' }}
                     className="col cW100p cFlex row jcenter acenter">
-                    <CheckboxControl onChange={handleCheck("other")} label={"Other cookies"} desc={"are auxiliary, they help Shortkey websites and services work more efficiently for your convenience. These cookies help to restore web page sessions, remember preferred region, save personal preferences, and more."} isChecked={true} />
+                    <CheckboxControl onChange={handleCheck("other")} label={"Other cookies"} desc={"are auxiliary, they help Shortkey websites and services work more efficiently for your convenience. These cookies help to restore web page sessions, remember preferred region, save personal preferences, and more."} isChecked={authCtx.cookies.other} />
                 </div>
                 <div
                     style={{ padding: '8px 16px' }}
                     className="col cW100p cFlex row jcenter acenter">
-                    <CheckboxControl onChange={handleCheck("analytical")} label={"Analytical cookies"} desc={"improve experience of working on Yandex services. They remember preference settings, anonymously analyze website traffic, and help displaying relevant ads."} isChecked={false} />
+                    <CheckboxControl onChange={handleCheck("analytical")} label={"Analytical cookies"} desc={"improve experience of working on Shortkey services. They remember preference settings, anonymously analyze website traffic, and help displaying relevant ads."} isChecked={authCtx.cookies.analytical} />
                 </div>
 
                 <div
@@ -201,6 +215,27 @@ export const CookiesOptionsDialog = () => {
 
 export const TermsOfUseDialog = () => {
 
+    const authCtx = useAuth();
+    const uiCtx = useUI();
+
+    const handleBackClick = () => {
+        uiCtx.setAny({
+            dialog_active_tab: DialogTabList.Cookies
+        })
+    }
+
+    const handleClose = (e) => {
+        e.preventDefault();
+        /**
+         * Set Account type local
+         * Deploy cookies
+         */
+        authCtx.activateGuestMode();
+        uiCtx.setAny({
+            dialog_visible: false
+        })
+    }
+
     return (
         <>
             <div
@@ -208,7 +243,8 @@ export const TermsOfUseDialog = () => {
 
                 <div>
                     <button
-                        className="btnIco">
+                        className="btnIco"
+                        onClick={handleBackClick}>
                         <span>
                             <BackIcon />
                         </span>
@@ -221,7 +257,8 @@ export const TermsOfUseDialog = () => {
 
                 <div>
                     <button
-                        className="btnIco --noHoverEffect">
+                        className="btnIco --noHoverEffect"
+                        onClick={handleClose}>
                         <span>
                             <CloseIcon />
                         </span>
@@ -239,6 +276,80 @@ export const TermsOfUseDialog = () => {
                 <div className="col cW100p cFlex row jcenter acenter">
                     <p className="fs20 fCBody lH25" style={{ maxWidth: '80%', textAlign: 'center' }}>
                         At Shortkey.org, accessible from www.shortkey.org, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Shortkey.org and how we use it.  If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.  This Privacy Policy applies only to our online activities and is valid for visitors to our website with regards to the information that they shared and/or collect in Shortkey.org. This policy is not applicable to any information collected offline or via channels other than this website. Our Privacy Policy was created with the help of the Free Privacy Policy Generator. By using our website, you hereby consent to our Privacy Policy and agree to its terms. The personal information that you are asked to provide, and the reasons why you are asked to provide it, will
+                    </p>
+                </div>
+
+                <div className="cH40"></div>
+            </div>
+        </>
+    );
+
+}
+
+
+export const PrivacyDialog = () => {
+
+    const authCtx = useAuth();
+    const uiCtx = useUI();
+
+    const handleBackClick = () => {
+        uiCtx.setAny({
+            dialog_active_tab: DialogTabList.Cookies
+        })
+    }
+
+    const handleClose = (e) => {
+        e.preventDefault();
+        /**
+         * Set Account type local
+         * Deploy cookies
+         */
+        authCtx.activateGuestMode();
+        uiCtx.setAny({
+            dialog_visible: false
+        })
+    }
+
+    return (
+        <>
+            <div
+                className="hdrDialog cFlex row jsb acenter">
+
+                <div>
+                    <button
+                        className="btnIco"
+                        onClick={handleBackClick}>
+                        <span>
+                            <BackIcon />
+                        </span>
+                    </button>
+                </div>
+
+                <div>
+
+                </div>
+
+                <div>
+                    <button
+                        className="btnIco --noHoverEffect"
+                        onClick={handleClose}>
+                        <span>
+                            <CloseIcon />
+                        </span>
+                    </button>
+                </div>
+
+            </div>
+
+            <div
+                className="bodyDialog cFlex col jstart acenter">
+                <div style={{ marginBottom: 16 }} className="col cW100p cFlex row jcenter acenter">
+                    <span className="fs24 fCPrimary">Privacy</span>
+                </div>
+
+                <div className="col cW100p cFlex row jcenter acenter">
+                    <p className="fs20 fCBody lH25" style={{ maxWidth: '80%', textAlign: 'center' }}>
+                        (@TODO: PrivacyContent) At Shortkey.org, accessible from www.shortkey.org, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Shortkey.org and how we use it.  If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.  This Privacy Policy applies only to our online activities and is valid for visitors to our website with regards to the information that they shared and/or collect in Shortkey.org. This policy is not applicable to any information collected offline or via channels other than this website. Our Privacy Policy was created with the help of the Free Privacy Policy Generator. By using our website, you hereby consent to our Privacy Policy and agree to its terms. The personal information that you are asked to provide, and the reasons why you are asked to provide it, will
                     </p>
                 </div>
 
@@ -289,7 +400,7 @@ export const ViewShortkeyDialog = () => {
                     <Input placeholder="Keywords" className={"w80p"} />
                 </div>
 
-                <div className="row cW80p cFlex row jstart acenter" style={{width: '80%', margin: '0 auto'}}>
+                <div className="row cW80p cFlex row jstart acenter" style={{ width: '80%', margin: '0 auto' }}>
                     <span className="sk-tag">
                         <span className="text">tag</span>
                     </span>
@@ -315,7 +426,7 @@ export const ViewShortkeyDialog = () => {
 
                 <div style={{ marginTop: 24 }} className="col cW100p cFlex row jcenter acenter">
                     <button className="btn t2 tc">
-                        <span style={{marginRight: 12}}>
+                        <span style={{ marginRight: 12 }}>
                             <DeleteIcon />
                         </span>
                         <span>
@@ -341,33 +452,73 @@ export const AddShortkeyDialog = () => {
     const urlInput = useRef(null);
     const tagsInput = useRef(null);
 
+    const [tags, setTags] = useState([]);
+
     const handleCloseClick = (e) => {
+        uiCtx.setData({
+            newShortkeyValue: undefined
+        });
         uiCtx.setAny({
-            dialog_visible: false
+            dialog_visible: false,
+            dialog_active_tab: null
         });
     }
 
     const handleAdd = async (e) => {
         let shortkey = shortkeyInput.current.value;
         let url = urlInput.current.value;
-        let tags_i = tagsInput.current.value;
-        let tags = [];
+        // let tags_i = tagsInput.current.value;
+        // let tags = [];
 
-        ((tags_i || "").split(",")).map((tag) => {
-            if(tag.trim() && tag.trim().length > 0)
-            {
-                tags.push(tag.trim());
-            }
-        })
+        // ((tags_i || "").split(",")).map((tag) => {
+        //     if(tag.trim() && tag.trim().length > 0)
+        //     {
+        //         tags.push(tag.trim());
+        //     }
+        // })
 
-        if((shortkey || "").trim().length < 1 || (url || "").trim().length < 1)
-        {
+        if ((shortkey || "").trim().length < 1 || (url || "").trim().length < 1) {
             return;
         }
 
         /** Add it */
         await skCtx.addShortkey(shortkey.trim(), url.trim(), tags);
         handleCloseClick(e);
+    }
+
+    const handleOnKeyUp = async (e) => {
+        e.preventDefault();
+
+        /** Support phones */
+        let k = e.target.value.charAt(e.target.selectionStart - 1).charCodeAt();
+
+        if (e.keyCode === 32 || e.keyCode === 188 || (e.keyCode === 229 && (k === 32 || k === 188))) {
+            let tag = (e.target.value || '').trim().toLowerCase().replaceAll(',', '');
+            // if (tag.length < 2 || tag.length > 24) {
+
+            //     return;
+            // }
+            if (tags.includes(tag)) {
+                // setWarningText("Can't add same tag again.");
+                return;
+            }
+            if (tag && tag.length > 1 && !tags.includes(tag)) {
+                // if (tags.length > 4) {
+                //     setWarningText("Must be 5 or less than 5 tags.");
+                // }
+                // else {
+                setTags([...tags, tag]);
+                e.target.value = null;
+                // }
+            }
+        }
+
+    }
+
+    const handleRemoveTag = (i) => (e) => {
+        let newtags = [...tags];
+        newtags.splice(i, 1);
+        setTags(newtags);
     }
 
     return (
@@ -397,7 +548,7 @@ export const AddShortkeyDialog = () => {
             <div
                 className="bodyDialog cFlex col jstart acenter">
                 <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
-                    <Input ref={shortkeyInput} placeholder="Shortkey" className={"w80p"} />
+                    <Input ref={shortkeyInput} autoFocus={true} placeholder="Shortkey" defaultValue={uiCtx.data['newShortkeyValue'] || ""} className={"w80p"} />
                 </div>
 
                 <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
@@ -405,12 +556,23 @@ export const AddShortkeyDialog = () => {
                 </div>
 
                 <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
-                    <Input ref={tagsInput} placeholder="Keywords (separated with comma)" className={"w80p"} />
+                    <Input ref={tagsInput} onKeyUp={handleOnKeyUp} placeholder="Keywords (separated with comma)" className={"w80p"} />
+                </div>
+
+                <div style={{ marginBottom: 24, flexWrap: 'wrap' }} className="cW100p cFlex row jstart acenter w80p">
+                    {tags.map((tag, i) => {
+                        return (
+                            <span key={tag} onClick={handleRemoveTag(i)} title="Remove this tag" className="sk-tag" style={{ margin: 4 }}>
+                                <span>{tag}</span>
+                                <button onClick={handleRemoveTag(i)}>x</button>
+                            </span>
+                        );
+                    })}
                 </div>
 
                 <div style={{ marginTop: 30 }} className="col cW100p cFlex row jcenter acenter">
                     <button className="btn t2 tc" onClick={handleAdd}>
-                        <span style={{marginRight: 12}}>
+                        <span style={{ marginRight: 12 }}>
                             <AddIcon />
                         </span>
                         <span>
@@ -427,18 +589,242 @@ export const AddShortkeyDialog = () => {
 }
 
 
-export default function Dialog() {
+export const EditShortkeyDialog = () => {
 
     const uiCtx = useUI();
+    const skCtx = useSk();
+
+    const shortkeyInput = useRef(null);
+    const urlInput = useRef(null);
+    const tagsInput = useRef(null);
+
+    const [tags, setTags] = useState([]);
+
+    const handleCloseClick = (e) => {
+        uiCtx.setData({
+            editShortkeyData: undefined
+        });
+        uiCtx.setAny({
+            dialog_visible: false,
+            dialog_active_tab: null
+        });
+    }
+
+    const handleAdd = async (e) => {
+        let shortkey = shortkeyInput.current.value;
+        let url = urlInput.current.value;
+
+        if ((shortkey || "").trim().length < 1 || (url || "").trim().length < 1) {
+            return;
+        }
+
+        /** Add it */
+        await skCtx.updateShortkey({
+            ...uiCtx.data['editShortkeyData'] || {},
+            shortkey: shortkey.trim(),
+            url: url.trim(),
+            tags: tags
+        });
+        handleCloseClick(e);
+    }
+
+    const handleOnKeyUp = async (e) => {
+        e.preventDefault();
+
+        /** Support phones */
+        let k = e.target.value.charAt(e.target.selectionStart - 1).charCodeAt();
+
+        if (e.keyCode === 32 || e.keyCode === 188 || (e.keyCode === 229 && (k === 32 || k === 188))) {
+            let tag = (e.target.value || '').trim().toLowerCase().replaceAll(',', '');
+            // if (tag.length < 2 || tag.length > 24) {
+
+            //     return;
+            // }
+            if (tags.includes(tag)) {
+                // setWarningText("Can't add same tag again.");
+                return;
+            }
+            if (tag && tag.length > 1 && !tags.includes(tag)) {
+                // if (tags.length > 4) {
+                //     setWarningText("Must be 5 or less than 5 tags.");
+                // }
+                // else {
+                setTags([...tags, tag]);
+                e.target.value = null;
+                // }
+            }
+        }
+
+    }
+
+    const handleRemoveTag = (i) => (e) => {
+        let newtags = [...tags];
+        newtags.splice(i, 1);
+        setTags(newtags);
+    }
+
+    useEffect(() => {
+        let tags = uiCtx.data['editShortkeyData'].tags || [];
+        setTags([...tags]);
+    }, [uiCtx.data['editShortkeyData']]);
 
     return (
         <>
             <div
-                className={("dialog-back")+(uiCtx.dialog_visible ? " -visible" : " -hidden")}>
-                <dialog open={uiCtx.dialog_visible} className={(` __tab-${uiCtx.dialog_active_tab}`)}>
+                className="hdrDialog cFlex row jsb acenter">
+
+                <div>
+                </div>
+
+                <div>
+
+                </div>
+
+                <div>
+                    <button
+                        onClick={handleCloseClick}
+                        className="btnIco --noHoverEffect">
+                        <span>
+                            <CloseIcon />
+                        </span>
+                    </button>
+                </div>
+
+            </div>
+
+            <div
+                className="bodyDialog cFlex col jstart acenter">
+                <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
+                    <Input ref={shortkeyInput} autoFocus={true} placeholder="Shortkey" defaultValue={uiCtx.data['editShortkeyData'].shortkey || ""} className={"w80p"} />
+                </div>
+
+                <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
+                    <Input ref={urlInput} placeholder="Target URL" defaultValue={uiCtx.data['editShortkeyData'].url || ""} className={"w80p"} />
+                </div>
+
+                <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
+                    <Input ref={tagsInput} onKeyUp={handleOnKeyUp} placeholder="Keywords (separated with comma)" className={"w80p"} />
+                </div>
+
+                <div style={{ marginBottom: 24, flexWrap: 'wrap' }} className="cW100p cFlex row jstart acenter w80p">
+                    {tags.map((tag, i) => {
+                        return (
+                            <span key={tag} title="Remove this tag" className="sk-tag" style={{ margin: 4 }}>
+                                <span>{tag}</span>
+                                <button onClick={handleRemoveTag(i)}>x</button>
+                            </span>
+                        );
+                    })}
+                </div>
+
+                <div style={{ marginTop: 30 }} className="col cW100p cFlex row jcenter acenter">
+                    <button className="btn t2 tc" onClick={handleAdd}>
+                        {/* <span style={{ marginRight: 12 }}>
+                            <AddIcon />
+                        </span> */}
+                        <span>
+                            Update shortkey
+                        </span>
+                    </button>
+                </div>
+
+                <div className="cH40"></div>
+            </div>
+        </>
+    );
+
+}
+
+
+export function BounceLoader({
+    className = null
+}) {
+
+    const uiCtx = useUI();
+
+    const navigateTo = useNavigate();
+
+    return (
+        <>
+            <div className={("sk-ldr") + (className ? " " + className : "")}>
+                <div className="line"></div>
+                <div className="line"></div>
+                <div className="line"></div>
+            </div>
+            <div style={{ marginTop: 20 }}>
+                <span>{uiCtx.data['loadText']}</span>
+            </div>
+            <div style={{ position: 'absolute', bottom: 60 }}>
+                <button onClick={() => window.location.assign('/')} className="btnIco label">
+                    <span style={{marginRight: 6}}>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-160 160-480l320-320 57 56-224 224h487v80H313l224 224-57 56Z" /></svg>
+                    </span>
+                    <span className="text">Back</span>
+                </button>
+            </div>
+        </>
+    );
+}
+
+export const LoadingDialog = () => {
+
+    return (
+        <>
+            <div
+                className="cW100p cH100p cFlex col jcenter acenter">
+
+                <BounceLoader className={'--purple'} />
+
+            </div>
+        </>
+    );
+
+}
+
+export default function Dialog() {
+
+    const authCtx = useAuth();
+    const uiCtx = useUI();
+    const dialogRef = useRef(null);
+
+    useOnClickOutside(dialogRef, (e) => {
+        if(uiCtx.dialog_active_tab === DialogTabList.Start || uiCtx.dialog_active_tab === DialogTabList.Cookies || uiCtx.dialog_active_tab === DialogTabList.Terms) {
+            authCtx.activateGuestMode();
+            uiCtx.setAny({
+                dialog_visible: false
+            })
+        }
+        else if(uiCtx.dialog_active_tab === DialogTabList.AddShortkey) {
+            uiCtx.setData({
+                newShortkeyValue: undefined
+            });
+            uiCtx.setAny({
+                dialog_visible: false,
+                dialog_active_tab: null
+            });    
+        }
+        else if(uiCtx.dialog_active_tab === DialogTabList.EditShortkey) {
+            uiCtx.setData({
+                editShortkeyData: undefined
+            });
+            uiCtx.setAny({
+                dialog_visible: false,
+                dialog_active_tab: null
+            });    
+        }
+        else if(uiCtx.dialog_active_tab === DialogTabList.Loading) {
+            /** NOTHING. */
+        }
+    }, (e) => {/**WIthin */}, uiCtx.dialog_visible);
+
+    return (
+        <>
+            <div
+                className={("dialog-back") + (uiCtx.dialog_visible ? " -visible" : " -hidden")}>
+                <dialog ref={dialogRef} open={uiCtx.dialog_visible} className={(` __tab-${uiCtx.dialog_active_tab}`)}>
                     <div>
 
-                        {uiCtx.dialog_active_tab === DialogTabList.Cookies ? <CookiesOptionsDialog /> : uiCtx.dialog_active_tab === DialogTabList.Terms ? <TermsOfUseDialog /> : uiCtx.dialog_active_tab === DialogTabList.Start ? <StartUseDialog /> : uiCtx.dialog_active_tab === DialogTabList.ViewShortkey ? <ViewShortkeyDialog /> : uiCtx.dialog_active_tab === DialogTabList.AddShortkey ? <AddShortkeyDialog /> : ""}
+                        {uiCtx.dialog_active_tab === DialogTabList.Cookies ? <CookiesOptionsDialog /> : uiCtx.dialog_active_tab === DialogTabList.Terms ? <TermsOfUseDialog /> : uiCtx.dialog_active_tab === DialogTabList.Start ? <StartUseDialog /> : uiCtx.dialog_active_tab === DialogTabList.ViewShortkey ? <ViewShortkeyDialog /> : uiCtx.dialog_active_tab === DialogTabList.AddShortkey ? <AddShortkeyDialog /> : uiCtx.dialog_active_tab === DialogTabList.EditShortkey ? <EditShortkeyDialog /> : uiCtx.dialog_active_tab === DialogTabList.Loading ? <LoadingDialog /> : uiCtx.dialog_active_tab === DialogTabList.Privacy ? <PrivacyDialog /> : ""}
 
                     </div>
                 </dialog>

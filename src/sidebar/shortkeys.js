@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import Input from "../components/input";
 import { useSk } from "../contexts/SkCtx";
 import { DialogTabList, useUI } from "../contexts/UICtx";
@@ -12,6 +13,8 @@ export default function ShortkeysTab() {
     const skCtx = useSk();
     const uiCtx = useUI();
 
+    const searchBarRef = useRef(null);
+
     const handleAddClick = (e) => {
         uiCtx.setAny({
             dialog_visible: true,
@@ -23,6 +26,13 @@ export default function ShortkeysTab() {
         skCtx.searchShortkeys(e.target.value);
     }
 
+    useEffect(() => {
+        if(searchBarRef.current) {
+            console.log("Focusing")
+            searchBarRef.current.focus();
+        }
+    }, [uiCtx.sidemenu_active]);
+
     return (
         <>
             <SidebarHeader />
@@ -30,7 +40,7 @@ export default function ShortkeysTab() {
 
                 <div className="skeys-hdr-container">
                     <div>
-                        <Input autoFocus={true} onChange={handleChangeInSearch} className={'--block-size'} htmlType={"search"} placeholder="Search for Shortkeys and Keywords" icon={null}>
+                        <Input ref={searchBarRef} autoFocus={true} onChange={handleChangeInSearch} className={'--block-size'} htmlType={"search"} placeholder="Search for Shortkeys and Keywords" icon={null}>
                             <SearchIcon style={{ marginRight: 8 }} />
                         </Input>
                     </div>
