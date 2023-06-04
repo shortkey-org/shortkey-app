@@ -83,9 +83,9 @@ const Shortkey = ({
                     className="section section-1" onClick={handleClick}>
                     <div
                         className="col col-1">
-                        <div className="r r1">
+                        {!authCtx.setting.hideIcons && <div className="r r1">
                             <img src={favicon} />
-                        </div>
+                        </div>}
                         <div className="r r2">
                             <span className="title">{title}</span>
                         </div>

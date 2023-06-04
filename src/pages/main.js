@@ -267,7 +267,7 @@ export default function MainPage() {
                                         return (
                                             <div key={result.id} className={("result") + (activeResult === x ? ' -active' : '')}>
                                                 <div>
-                                                    <img src={result.favicon} />
+                                                    {!authCtx.setting.hideIcons && <img src={result.favicon} />}
                                                     <span>{result.shortkey}</span>
                                                     <span className="url">{result.url}</span>
                                                 </div>

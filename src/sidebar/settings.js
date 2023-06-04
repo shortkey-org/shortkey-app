@@ -33,6 +33,10 @@ export default function SettingsTab() {
         authCtx.changeSetting(SettingKey.hideProductHunt, e.target.checked);
     }
 
+    const handleHideIcons = (e) => {
+        authCtx.changeSetting(SettingKey.hideIcons, e.target.checked);
+    }
+
     const handleMinimalistic = (e) => {
         authCtx.changeSetting(SettingKey.minimalistic, e.target.checked);
     }
@@ -79,7 +83,7 @@ export default function SettingsTab() {
 
                 <div className="vS16"></div>
 
-                <CheckboxControl label={"Hide Icons"} onChange={handleMinimalistic} isChecked={authCtx.setting.minimalistic} desc={"Hide all superfluous elements, including the logo on the start page."} />
+                <CheckboxControl label={"Hide Icons"} onChange={handleHideIcons} isChecked={authCtx.setting.hideIcons} desc={"Hide icons from everywhere, include suggestions and collection list."} />
 
                 <div className="vS16"></div>
 

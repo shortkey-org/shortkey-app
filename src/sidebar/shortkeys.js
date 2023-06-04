@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Input from "../components/input";
 import { useSk } from "../contexts/SkCtx";
 import { DialogTabList, useUI } from "../contexts/UICtx";
@@ -14,6 +14,8 @@ export default function ShortkeysTab() {
     const uiCtx = useUI();
 
     const searchBarRef = useRef(null);
+
+    const [focused, setFocused] = useState(false);
 
     const handleAddClick = (e) => {
         uiCtx.setAny({
@@ -33,6 +35,14 @@ export default function ShortkeysTab() {
         }
     }, [uiCtx.sidemenu_active]);
 
+    const handleOnFocus = (e) => {
+        setFocused(true);
+    }
+
+    const handleOnBlur = (e) => {
+        setFocused(false);
+    }
+
     return (
         <>
             <SidebarHeader />
@@ -40,11 +50,19 @@ export default function ShortkeysTab() {
 
                 <div className="skeys-hdr-container">
                     <div>
-                        <Input ref={searchBarRef} autoFocus={true} onChange={handleChangeInSearch} className={'--block-size'} htmlType={"search"} placeholder="Search for Shortkeys and Keywords" icon={null}>
-                            <SearchIcon style={{ marginRight: 8 }} />
+                        <Input ref={searchBarRef} onFocus={handleOnFocus} onBlur={handleOnBlur} autoFocus={true} onChange={handleChangeInSearch} className={'--block-size'} htmlType={"search"} placeholder="Search for Shortkeys and Keywords" icon={null}>
+                            {/* <SearchIcon style={{ marginRight: 8 }} /> */}
+                            {!focused && <button style={{borderRadius: 0}} onClick={handleAddClick} className="btn t2 tc">
+                                <span style={{marginRight: 6}}>
+                                    <AddIcon />
+                                </span>
+                                <span>
+                                    Collect Shortkey
+                                </span>
+                            </button>}
                         </Input>
                     </div>
-                    <div className="--auto-w">
+                    {/* <div className="--auto-w">
                         <button
                             onClick={handleAddClick}
                             className="btnIco icoB">
@@ -52,7 +70,7 @@ export default function ShortkeysTab() {
                                 <AddIcon />
                             </span>
                         </button>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="skeys-wrapper">

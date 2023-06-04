@@ -14,6 +14,7 @@ const defaultSettings = {
     instantLauncher: false,
     addNewShortkeyButton: true,
     hideProductHunt: false,
+    hideIcons: false,
     minimalistic: false,
     enableBackgroundPicture: false,
     backgroundPicture: BackgroundImagesAvailable[0]
@@ -23,6 +24,7 @@ export const SettingKey = {
     instantLauncher: "instantLauncher",
     addNewShortkeyButton: "addNewShortkeyButton",
     hideProductHunt: "hideProductHunt",
+    hideIcons: "hideIcons",
     minimalistic: "minimalistic",
     enableBackgroundPicture: "enableBackgroundPicture",
     backgroundPicture: "backgroundPicture"
@@ -42,6 +44,7 @@ const initialState = {
         instantLauncher: null,
         addNewShortkeyButton: null,
         hideProductHunt: null,
+        hideIcons: null,
         minimalistic: null,
         enableBackgroundPicture: null,
         backgroundPicture: null
@@ -125,6 +128,7 @@ function AuthProvider({ children }) {
             instantLauncher: Settings.getInstantLauncher(),
             addNewShortkeyButton: Settings.getAddNewShortkey(),
             hideProductHunt: Settings.getHideProductHunt(),
+            hideIcons: Settings.getHideIcons(),
             minimalistic: Settings.getMinimalistic(),
             enableBackgroundPicture: Settings.getEnableBackgroundPicture(),
             backgroundPicture: Settings.getBackgroundPicture()
@@ -135,6 +139,7 @@ function AuthProvider({ children }) {
         Settings.initInstantLauncher(defaultSettings.instantLauncher);
         Settings.initAddNewShortkey(defaultSettings.addNewShortkeyButton);
         Settings.initHideProductHunt(defaultSettings.hideProductHunt);
+        Settings.initHideIcons(defaultSettings.hideIcons);
         Settings.initMinimalistic(defaultSettings.minimalistic);
         Settings.initEnableBackgroundPicture(defaultSettings.enableBackgroundPicture);
         Settings.initBackgroundPicture(defaultSettings.backgroundPicture);
@@ -152,6 +157,10 @@ function AuthProvider({ children }) {
             
             case SettingKey.hideProductHunt:
                 Settings.setHideProductHunt(val);
+                break;
+            
+            case SettingKey.hideIcons:
+                Settings.setHideIcons(val);
                 break;
             
             case SettingKey.minimalistic:

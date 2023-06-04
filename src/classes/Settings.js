@@ -35,6 +35,15 @@ class Settings {
         return settings.hideProductHunt ?? false;
     }
 
+    static getHideIcons() {
+        const settings = Settings.getSettings();
+        return settings.hideIcons ?? false;
+    }
+
+    static setHideIcons(value) {
+        Settings.saveSettings({ hideIcons: value });
+    }
+
     static setHideProductHunt(value) {
         Settings.saveSettings({ hideProductHunt: value });
     }
@@ -86,6 +95,14 @@ class Settings {
         const settings = JSON.parse(localStorage.getItem(Settings.KEY)) || {};
         if (!settings.hasOwnProperty("hideProductHunt")) {
             settings.hideProductHunt = enabled;
+            localStorage.setItem(Settings.KEY, JSON.stringify(settings));
+        }
+    }
+
+    static initHideIcons(enabled) {
+        const settings = JSON.parse(localStorage.getItem(Settings.KEY)) || {};
+        if (!settings.hasOwnProperty("hideIcons")) {
+            settings.hideIcons = enabled;
             localStorage.setItem(Settings.KEY, JSON.stringify(settings));
         }
     }
