@@ -98,6 +98,17 @@ export default function SettingsTab() {
 
                 </div>} */}
 
+                <div
+                    style={{width: '80%'}}
+                    className="cFlex row jsb acenter sidebarFooterContainer">
+                        <a href="#">About</a>
+                        <a href="#">Cookies</a>
+                        <a href="#">Privacy</a>
+                        <a href="#">Terms</a>
+                        <a href="#">Tutorial</a>
+                        <a href="#">Support</a>
+                </div>
+
             </SidebarContent>
         </>
     );

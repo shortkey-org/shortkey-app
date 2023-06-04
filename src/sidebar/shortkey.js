@@ -87,7 +87,7 @@ const Shortkey = ({
                             <img src={favicon} />
                         </div>
                         <div className="r r2">
-                            <span>{title}</span>
+                            <span className="title">{title}</span>
                         </div>
 
                         <div className="r r3">
