@@ -209,19 +209,24 @@ function SkProvider({ children }) {
 
     const addShortkey = async (shortkey, url, tags) => {
         let u = modifyUrl(url);
-        ShortkeyManager.addShortkey({
+        let r = ShortkeyManager.addShortkey({
             id: uuid(),
             shortkey: shortkey,
-            favicon: `https://f.start.me/${(new URL(u)).hostname}`,
+            favicon: `https://www.google.com/s2/favicons?sz=64&domain=${u}`,
             url: u,
             tags: tags
         });
         refreshShortkeys();
+        return r;
     }
 
     const updateShortkey = async (shortkey) => {
-        ShortkeyManager.updateShortkey(shortkey);
+        let r = ShortkeyManager.updateShortkey({
+            ...shortkey,
+            favicon: `https://www.google.com/s2/favicons?sz=64&domain=${shortkey.url}`,
+        });
         refreshShortkeys();
+        return r;
     }
 
     /** shortkey is object contains id too */

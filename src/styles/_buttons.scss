@@ -77,6 +77,12 @@
     width: 36px;
     height: 36px;
 
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
     &.label {
         width: auto;
         padding: 0 12px;

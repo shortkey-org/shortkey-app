@@ -37,13 +37,13 @@ export default function MainPage() {
     }
 
     const navigate = (q, url) => {
-        uiCtx.setData({
-            'loadText': q
-        });
-        uiCtx.setAny({
-            dialog_visible: true,
-            dialog_active_tab: DialogTabList.Loading
-        });
+        // uiCtx.setData({
+        //     'loadText': q
+        // });
+        // uiCtx.setAny({
+        //     dialog_visible: true,
+        //     dialog_active_tab: DialogTabList.Loading
+        // });
         window.location.assign(url);
     }
 
@@ -58,7 +58,15 @@ export default function MainPage() {
         //     setSearchActive(false);
         // }
 
-        if ((e.target.value || "").length > 0) {
+        if((e.target.value || "").trim().length < 1) {
+            if(e.key === ' ') {
+                authCtx.changeSetting(SettingKey.instantLauncher, !authCtx.setting.instantLauncher);
+                e.target.value = '';
+                return;
+            }
+        }
+
+        if ((e.target.value || "").trim().length > 0) {
             setHideInstantLauncherIcon(true);
         }
         else {
@@ -125,6 +133,30 @@ export default function MainPage() {
     }
 
     useEffect(() => {
+
+        const onKeyPress = (e) => {
+            if (!document.activeElement || (document.activeElement.tagName !== 'INPUT')) {
+                if(uiCtx.sidemenu_active) {
+                    uiCtx.setSidemenuVisibility(false);
+                }
+                if(uiCtx.dialog_visible) {
+                    uiCtx.setAny({
+                        dialog_visible: false,
+                        dialog_active_tab: null
+                    });
+                }
+                finderRef.current.focus();
+            }
+        }
+
+        document.addEventListener("keypress", onKeyPress);
+
+        return () => {
+            document.removeEventListener("keypress", onKeyPress);
+        }
+    }, []);
+
+    useEffect(() => {
         console.log("Active result: ", activeResult);
     }, [activeResult]);
 
@@ -161,6 +193,19 @@ export default function MainPage() {
             dialog_active_tab: DialogTabList.AddShortkey
         })
     }
+    
+    useEffect(() => {
+        if(!uiCtx.sidemenu_active && !uiCtx.dialog_visible) {
+            let it = 0;
+            let interval = setInterval(() => {
+                finderRef.current.focus();
+                it++;
+                if(it > 5) {
+                    clearInterval(interval);
+                }
+            }, 60);
+        }
+    }, [uiCtx.sidemenu_active, uiCtx.dialog_visible]);
 
     return (
         <>

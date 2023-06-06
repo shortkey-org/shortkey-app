@@ -38,6 +38,7 @@ class ShortkeyManager {
         const shortkeys = this.getShortkeys();
         shortkeys.push(shortkey);
         localStorage.setItem(this.KEY, JSON.stringify(shortkeys));
+        return shortkey;
     }
 
     static updateShortkey(shortkey) {
@@ -47,6 +48,7 @@ class ShortkeyManager {
             shortkeys[index] = shortkey;
             localStorage.setItem(this.KEY, JSON.stringify(shortkeys));
         }
+        return shortkey;
     }
 
     static deleteShortkey(shortkey) {

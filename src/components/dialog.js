@@ -9,7 +9,7 @@ import CloseIcon from "../icons/Close";
 import DeleteIcon from "../icons/Delete";
 import CheckboxControl from "./checkbox";
 import Input from "./input";
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useOnClickOutside } from "../hooks/useOnClickOutside";
 
 const StartUseDialog = () => {
@@ -452,6 +452,8 @@ export const AddShortkeyDialog = () => {
     const urlInput = useRef(null);
     const tagsInput = useRef(null);
 
+    const [createdShortkey, setCreatedShortkey] = useState(null);
+
     const [tags, setTags] = useState([]);
 
     const handleCloseClick = (e) => {
@@ -462,6 +464,13 @@ export const AddShortkeyDialog = () => {
             dialog_visible: false,
             dialog_active_tab: null
         });
+    }
+
+    const handleDelete = async (e) => {
+        if (createdShortkey) {
+            await skCtx.deleteShortkey(createdShortkey);
+        }
+        handleCloseClick(e);
     }
 
     const handleAdd = async (e) => {
@@ -489,27 +498,24 @@ export const AddShortkeyDialog = () => {
     const handleOnKeyUp = async (e) => {
         e.preventDefault();
 
+        if(e.key === 'Enter' && createdShortkey) {
+            if((e.target.value || "").length < 1) {
+                handleCloseClick();
+                return;
+            }
+        }
+
         /** Support phones */
         let k = e.target.value.charAt(e.target.selectionStart - 1).charCodeAt();
 
-        if (e.keyCode === 32 || e.keyCode === 188 || (e.keyCode === 229 && (k === 32 || k === 188))) {
+        if (e.key === 'Enter' || e.keyCode === 32 || e.keyCode === 188 || (e.keyCode === 229 && (k === 32 || k === 188))) {
             let tag = (e.target.value || '').trim().toLowerCase().replaceAll(',', '');
-            // if (tag.length < 2 || tag.length > 24) {
-
-            //     return;
-            // }
             if (tags.includes(tag)) {
-                // setWarningText("Can't add same tag again.");
                 return;
             }
             if (tag && tag.length > 1 && !tags.includes(tag)) {
-                // if (tags.length > 4) {
-                //     setWarningText("Must be 5 or less than 5 tags.");
-                // }
-                // else {
                 setTags([...tags, tag]);
                 e.target.value = null;
-                // }
             }
         }
 
@@ -520,6 +526,61 @@ export const AddShortkeyDialog = () => {
         newtags.splice(i, 1);
         setTags(newtags);
     }
+
+
+    const checkShortkeyField = () => {
+        return (shortkeyInput.current.value && shortkeyInput.current.value.length > 0);
+    }
+
+    const checkURLField = () => {
+        return (urlInput.current.value && urlInput.current.value.length > 0);
+    }
+
+    const createShortkey = async () => {
+        let shortkey = null;
+        if (createdShortkey) {
+            shortkey = await skCtx.updateShortkey({
+                id: createdShortkey.id,
+                shortkey: shortkeyInput.current.value.trim(),
+                url: urlInput.current.value.trim(),
+                tags: tags
+            });
+        }
+        else {
+            shortkey = await skCtx.addShortkey(shortkeyInput.current.value.trim(), urlInput.current.value.trim(), tags);
+        }
+        setCreatedShortkey(shortkey);
+    }
+
+    const handleShortkeyKeyUp = async (e) => {
+        if(e.key === 'Enter') {
+            urlInput.current.focus();
+        }
+    }
+
+    const handleShortkeyChange = async (e) => {
+        if (checkShortkeyField() && checkURLField()) {
+            await createShortkey();
+        }
+    }
+
+    const handleURLKeyUp = async (e) => {
+        if(e.key === 'Enter') {
+            tagsInput.current.focus();
+        }
+    }
+
+    const handleURLChange = async (e) => {
+        if (checkShortkeyField() && checkURLField()) {
+            await createShortkey();
+        }
+    }
+
+    useEffect(() => {
+        if (checkShortkeyField() && checkURLField()) {
+            createShortkey();
+        }
+    }, [tags]);
 
     return (
         <>
@@ -548,11 +609,11 @@ export const AddShortkeyDialog = () => {
             <div
                 className="bodyDialog cFlex col jstart acenter">
                 <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
-                    <Input ref={shortkeyInput} autoFocus={true} placeholder="Shortkey" defaultValue={uiCtx.data['newShortkeyValue'] || ""} className={"w80p"} />
+                    <Input ref={shortkeyInput} onKeyUp={handleShortkeyKeyUp} onChange={handleShortkeyChange} autoFocus={true} placeholder="Shortkey" defaultValue={uiCtx.data['newShortkeyValue'] || ""} className={"w80p"} />
                 </div>
 
                 <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
-                    <Input ref={urlInput} placeholder="Target URL" className={"w80p"} />
+                    <Input ref={urlInput} onKeyUp={handleURLKeyUp} onChange={handleURLChange} placeholder="Target URL" className={"w80p"} />
                 </div>
 
                 <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
@@ -571,12 +632,12 @@ export const AddShortkeyDialog = () => {
                 </div>
 
                 <div style={{ marginTop: 30 }} className="col cW100p cFlex row jcenter acenter">
-                    <button className="btn t2 tc" onClick={handleAdd}>
+                    <button disabled={!createdShortkey} className="btn t2 tc" onClick={handleDelete}>
                         <span style={{ marginRight: 12 }}>
-                            <AddIcon />
+                            <DeleteIcon />
                         </span>
                         <span>
-                            Add shortkey
+                            Delete shortkey
                         </span>
                     </button>
                 </div>
@@ -610,6 +671,13 @@ export const EditShortkeyDialog = () => {
         });
     }
 
+    const handleDelete = async (e) => {
+        await skCtx.deleteShortkey({
+            ...uiCtx.data['editShortkeyData'] || {}
+        });
+        handleCloseClick(e);
+    }
+
     const handleAdd = async (e) => {
         let shortkey = shortkeyInput.current.value;
         let url = urlInput.current.value;
@@ -631,10 +699,17 @@ export const EditShortkeyDialog = () => {
     const handleOnKeyUp = async (e) => {
         e.preventDefault();
 
+        if(e.key === 'Enter') {
+            if((e.target.value || "").length < 1) {
+                handleCloseClick();
+                return;
+            }
+        }
+
         /** Support phones */
         let k = e.target.value.charAt(e.target.selectionStart - 1).charCodeAt();
 
-        if (e.keyCode === 32 || e.keyCode === 188 || (e.keyCode === 229 && (k === 32 || k === 188))) {
+        if (e.key === 'Enter' || e.keyCode === 32 || e.keyCode === 188 || (e.keyCode === 229 && (k === 32 || k === 188))) {
             let tag = (e.target.value || '').trim().toLowerCase().replaceAll(',', '');
             // if (tag.length < 2 || tag.length > 24) {
 
@@ -663,10 +738,58 @@ export const EditShortkeyDialog = () => {
         setTags(newtags);
     }
 
+    
+    const checkShortkeyField = () => {
+        return (shortkeyInput.current.value && shortkeyInput.current.value.length > 0);
+    }
+
+    const checkURLField = () => {
+        return (urlInput.current.value && urlInput.current.value.length > 0);
+    }
+
+    const updateShortkey = async () => {
+        await skCtx.updateShortkey({
+            ...uiCtx.data['editShortkeyData'] || {},
+            shortkey: shortkeyInput.current.value.trim(),
+            url: urlInput.current.value.trim(),
+            tags: tags
+        });
+    }
+
     useEffect(() => {
         let tags = uiCtx.data['editShortkeyData'].tags || [];
         setTags([...tags]);
     }, [uiCtx.data['editShortkeyData']]);
+
+    const handleShortkeyChange = async (e) => {
+        if (checkShortkeyField() && checkURLField()) {
+            await updateShortkey();
+        }
+    }
+
+    const handleShortkeyKeyUp = async (e) => {
+        if(e.key === 'Enter') {
+            urlInput.current.focus();
+        }
+    }
+
+    const handleURLChange = async (e) => {
+        if (checkShortkeyField() && checkURLField()) {
+            await updateShortkey();
+        }
+    }
+
+    const handleURLKeyUp = async (e) => {
+        if(e.key === 'Enter') {
+            tagsInput.current.focus();
+        }
+    }
+
+    useEffect(() => {
+        if (checkShortkeyField() && checkURLField()) {
+            updateShortkey();
+        }
+    }, [tags]);
 
     return (
         <>
@@ -695,11 +818,11 @@ export const EditShortkeyDialog = () => {
             <div
                 className="bodyDialog cFlex col jstart acenter">
                 <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
-                    <Input ref={shortkeyInput} autoFocus={true} placeholder="Shortkey" defaultValue={uiCtx.data['editShortkeyData'].shortkey || ""} className={"w80p"} />
+                    <Input ref={shortkeyInput} onKeyUp={handleShortkeyKeyUp} onChange={handleShortkeyChange} autoFocus={true} placeholder="Shortkey" defaultValue={uiCtx.data['editShortkeyData'].shortkey || ""} className={"w80p"} />
                 </div>
 
                 <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
-                    <Input ref={urlInput} placeholder="Target URL" defaultValue={uiCtx.data['editShortkeyData'].url || ""} className={"w80p"} />
+                    <Input ref={urlInput} onKeyUp={handleURLKeyUp} onChange={handleURLChange} placeholder="Target URL" defaultValue={uiCtx.data['editShortkeyData'].url || ""} className={"w80p"} />
                 </div>
 
                 <div style={{ marginBottom: 24 }} className="col cW100p cFlex row jcenter acenter">
@@ -718,12 +841,12 @@ export const EditShortkeyDialog = () => {
                 </div>
 
                 <div style={{ marginTop: 30 }} className="col cW100p cFlex row jcenter acenter">
-                    <button className="btn t2 tc" onClick={handleAdd}>
-                        {/* <span style={{ marginRight: 12 }}>
-                            <AddIcon />
-                        </span> */}
+                    <button className="btn t2 tc" onClick={handleDelete}>
+                        <span style={{ marginRight: 12 }}>
+                            <DeleteIcon />
+                        </span>
                         <span>
-                            Update shortkey
+                            Delete shortkey
                         </span>
                     </button>
                 </div>
@@ -756,7 +879,7 @@ export function BounceLoader({
             </div>
             <div style={{ position: 'absolute', bottom: 60 }}>
                 <button onClick={() => window.location.assign('/')} className="btnIco label">
-                    <span style={{marginRight: 6}}>
+                    <span style={{ marginRight: 6 }}>
                         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-160 160-480l320-320 57 56-224 224h487v80H313l224 224-57 56Z" /></svg>
                     </span>
                     <span className="text">Back</span>
@@ -788,34 +911,34 @@ export default function Dialog() {
     const dialogRef = useRef(null);
 
     useOnClickOutside(dialogRef, (e) => {
-        if(uiCtx.dialog_active_tab === DialogTabList.Start || uiCtx.dialog_active_tab === DialogTabList.Cookies || uiCtx.dialog_active_tab === DialogTabList.Terms) {
+        if (uiCtx.dialog_active_tab === DialogTabList.Start || uiCtx.dialog_active_tab === DialogTabList.Cookies || uiCtx.dialog_active_tab === DialogTabList.Terms) {
             authCtx.activateGuestMode();
             uiCtx.setAny({
                 dialog_visible: false
             })
         }
-        else if(uiCtx.dialog_active_tab === DialogTabList.AddShortkey) {
+        else if (uiCtx.dialog_active_tab === DialogTabList.AddShortkey) {
             uiCtx.setData({
                 newShortkeyValue: undefined
             });
             uiCtx.setAny({
                 dialog_visible: false,
                 dialog_active_tab: null
-            });    
+            });
         }
-        else if(uiCtx.dialog_active_tab === DialogTabList.EditShortkey) {
+        else if (uiCtx.dialog_active_tab === DialogTabList.EditShortkey) {
             uiCtx.setData({
                 editShortkeyData: undefined
             });
             uiCtx.setAny({
                 dialog_visible: false,
                 dialog_active_tab: null
-            });    
+            });
         }
-        else if(uiCtx.dialog_active_tab === DialogTabList.Loading) {
+        else if (uiCtx.dialog_active_tab === DialogTabList.Loading) {
             /** NOTHING. */
         }
-    }, (e) => {/**WIthin */}, uiCtx.dialog_visible);
+    }, (e) => {/**WIthin */ }, uiCtx.dialog_visible);
 
     return (
         <>
