@@ -30,6 +30,15 @@ class Settings {
         Settings.saveSettings({ addNewShortkey: value });
     }
 
+    static getSuggestions() {
+        const settings = Settings.getSettings();
+        return settings.suggestions ?? true;
+    }
+
+    static setSuggestions(value) {
+        Settings.saveSettings({ suggestions: value });
+    }
+
     static getHideProductHunt() {
         const settings = Settings.getSettings();
         return settings.hideProductHunt ?? false;
@@ -91,6 +100,14 @@ class Settings {
         }
     }
 
+    static initSuggestions(enabled) {
+        const settings = JSON.parse(localStorage.getItem(Settings.KEY)) || {};
+        if (!settings.hasOwnProperty("suggestions")) {
+            settings.suggestions = enabled;
+            localStorage.setItem(Settings.KEY, JSON.stringify(settings));
+        }
+    }
+
     static initHideProductHunt(enabled) {
         const settings = JSON.parse(localStorage.getItem(Settings.KEY)) || {};
         if (!settings.hasOwnProperty("hideProductHunt")) {
@@ -129,6 +146,10 @@ class Settings {
             settings.backgroundPicture = picUrl;
             localStorage.setItem(Settings.KEY, JSON.stringify(settings));
         }
+    }
+
+    static removeSelf() {
+        localStorage.removeItem(Settings.KEY);
     }
 }
 

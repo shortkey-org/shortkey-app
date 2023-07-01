@@ -72,12 +72,12 @@ export default function Header() {
 
                     </div>} */}
 
-                    <button
+                    {/* <button
                         className="btnIco">
                         <span>
                             <EventsListIcon />
                         </span>
-                    </button>
+                    </button> */}
 
                     <div className="dummy"></div>
 

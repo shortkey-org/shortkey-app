@@ -34,6 +34,11 @@ class ShortkeyManager {
         })
     }
 
+    static removeSelf() {
+        localStorage.removeItem(ShortkeyManager.INIT_KEY);
+        localStorage.removeItem(ShortkeyManager.KEY);
+    }
+
     static addShortkey(shortkey) {
         const shortkeys = this.getShortkeys();
         shortkeys.push(shortkey);

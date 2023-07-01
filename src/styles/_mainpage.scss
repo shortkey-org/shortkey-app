@@ -160,12 +160,26 @@
                 > span {
                     margin-right: 12px;
 
+                    max-width: 200px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+
+                    white-space: nowrap;
+
                     &:last-child {
                         margin-right: 0;
                     }
 
                     &.url {
                         opacity: 0.2;
+                    }
+
+                    &.shorcutKey {
+                        background: var(--color-deep-violet);
+                        border-radius: 40px;
+                        padding: 4px 12px;
+                        color: #fff;
+                        font-size: 14px;
                     }
                 }
 
@@ -251,7 +265,7 @@
     border-radius: 30px;
 
     &.jumps-active {
-        border-radius: 15px 15px 0 0;
+        // border-radius: 15px 15px 0 0;
     }
 
     background-color: var(--color-white);

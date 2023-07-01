@@ -186,6 +186,10 @@
         background-color: rgb(93, 54, 109);
     }
 
+    &:hover input:checked~.checkbox-checkmark {
+        box-shadow: 0 0 0 1px rgba(93, 54, 109, 1);
+    }
+
     &:focus-within {
         .checkbox-checkmark {
             box-shadow: 0 0 0 3px rgba(93, 54, 109, 0.4);

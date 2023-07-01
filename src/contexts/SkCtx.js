@@ -119,6 +119,8 @@ function SkProvider({ children }) {
          * Advanced loading, show loading if it taking more than 1 second
          */
 
+        console.log("getting shortkeys")
+
         let loadFinished = false;
 
         let loadingTimeout = setTimeout(() => {
@@ -307,7 +309,14 @@ function SkProvider({ children }) {
 
             if(results.length < 1)
             {
-                searchInJumps();
+                // searchInJumps();
+                dispatch({
+                    type: 'DATA',
+                    payload: {
+                        queryResults: [],
+                        queryActive: true
+                    }
+                });
             }
             else
             {
@@ -317,7 +326,7 @@ function SkProvider({ children }) {
                         queryResults: results,
                         queryActive: true
                     }
-                });    
+                });
             }
         }
         else

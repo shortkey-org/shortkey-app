@@ -86,7 +86,16 @@ const Shortkey = ({
                         {!authCtx.setting.hideIcons && <div className="r r1">
                             <img src={favicon} />
                         </div>}
-                        <div className="r r2">
+
+                        <div
+                            className="r r3">
+                                <span className="combined">
+                                    <span className="title">{title}</span>
+                                    <a href={link} className="link">{link}</a>
+                                </span>
+                        </div>
+
+                        {/* <div className="r r2">
                             <span className="title">{title}</span>
                         </div>
 
@@ -94,7 +103,7 @@ const Shortkey = ({
                         <a target={'_blank'} href={link}>
                             <span className={'text link'}>{link}</span>
                         </a>
-                        </div>
+                        </div> */}
 
                     </div>
                     <div

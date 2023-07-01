@@ -9,6 +9,7 @@ import CloseIcon from "../icons/Close";
 import EditIcon from "../icons/Edit";
 import MenuIcon from "../icons/Menu";
 import Sidebar from "../sidebar";
+import { BounceLoader } from "../components/dialog";
 
 export default function MainPage() {
 
@@ -22,6 +23,7 @@ export default function MainPage() {
     const [hideInstantLauncherIcon, setHideInstantLauncherIcon] = useState(false);
 
     const [activeResult, setActiveResult] = useState(0);
+    const [launched, setLaunched] = useState(false);
 
     const handleInstantLauncherChange = (e) => {
         console.log("Instant launcher changed.");
@@ -44,7 +46,12 @@ export default function MainPage() {
         //     dialog_visible: true,
         //     dialog_active_tab: DialogTabList.Loading
         // });
-        window.location.assign(url);
+        setLaunched(true);
+        let u = url;
+        if (!url.startsWith("http")) {
+            u = `http://${url}`;
+        }
+        window.location.assign(u);
     }
 
     const handleKeyUp = (e) => {
@@ -58,8 +65,8 @@ export default function MainPage() {
         //     setSearchActive(false);
         // }
 
-        if((e.target.value || "").trim().length < 1) {
-            if(e.key === ' ') {
+        if ((e.target.value || "").trim().length < 1) {
+            if (e.key === ' ') {
                 authCtx.changeSetting(SettingKey.instantLauncher, !authCtx.setting.instantLauncher);
                 e.target.value = '';
                 return;
@@ -135,11 +142,23 @@ export default function MainPage() {
     useEffect(() => {
 
         const onKeyPress = (e) => {
-            if (!document.activeElement || (document.activeElement.tagName !== 'INPUT')) {
-                if(uiCtx.sidemenu_active) {
-                    uiCtx.setSidemenuVisibility(false);
+            console.log(e)
+            if (e.key === 'Enter') {
+                if (skCtx.queryResults && skCtx.queryResults.length > 0 && activeResult > -1 && authCtx.setting.suggestions) {
+                    if (!uiCtx.sidemenu_active && !uiCtx.dialog_visible) {
+                        let result = skCtx.queryResults[activeResult];
+                        navigate(result.label, `${result.url}`)
+                    }
                 }
-                if(uiCtx.dialog_visible) {
+            }
+            if (!document.activeElement || (document.activeElement.tagName !== 'INPUT')) {
+                console.log(uiCtx.sidemenu_active)
+                if (uiCtx.sidemenu_active) {
+                    // uiCtx.setSidemenuVisibility(false);
+
+                    return;
+                }
+                if (uiCtx.dialog_visible) {
                     uiCtx.setAny({
                         dialog_visible: false,
                         dialog_active_tab: null
@@ -154,7 +173,7 @@ export default function MainPage() {
         return () => {
             document.removeEventListener("keypress", onKeyPress);
         }
-    }, []);
+    }, [uiCtx.sidemenu_active, skCtx.queryResults]);
 
     useEffect(() => {
         console.log("Active result: ", activeResult);
@@ -193,19 +212,23 @@ export default function MainPage() {
             dialog_active_tab: DialogTabList.AddShortkey
         })
     }
-    
+
     useEffect(() => {
-        if(!uiCtx.sidemenu_active && !uiCtx.dialog_visible) {
+        if (!uiCtx.sidemenu_active && !uiCtx.dialog_visible) {
             let it = 0;
             let interval = setInterval(() => {
                 finderRef.current.focus();
                 it++;
-                if(it > 5) {
+                if (it > 5) {
                     clearInterval(interval);
                 }
             }, 60);
         }
     }, [uiCtx.sidemenu_active, uiCtx.dialog_visible]);
+
+    const handleOnResultClick = (result, x) => {
+        navigate(result.label, `${result.url}`)
+    }
 
     return (
         <>
@@ -217,7 +240,7 @@ export default function MainPage() {
 
                 <div
                     className={("shortkey-search-section") + (focused ? " mobileFindBar" : "")}>
-                    <div className="cFlex col jstart acenter">
+                    <div className="cFlex col jstart acenter" style={{ height: "fit-content" }}>
                         {!authCtx.setting.minimalistic && <div className="cW100p mB30 cFlex row jcenter acenter logoContainer">
                             <svg className="logo" width="479" height="131" viewBox="0 0 479 131" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 {/* <g filter="url(#filter0_d_1109_1241)">
@@ -256,22 +279,40 @@ export default function MainPage() {
                                             </span>
                                         </button> : ''}
 
-                                        {hideInstantLauncherIcon ? '' :
+                                        {/* {hideInstantLauncherIcon ? '' :
                                             <span className="quickSetting">
                                                 <label className="switch">
                                                     <input onChange={handleInstantLauncherChange} type="checkbox" key={`${authCtx.setting.instantLauncher}`} defaultChecked={authCtx.setting.instantLauncher}></input>
                                                     <span className="slider round"></span>
                                                 </label>
-                                            </span>}
+                                            </span>} */}
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {skCtx.jumpsActive && skCtx.jumpsResults.length > 0 && <div className="cW100p">
-                            <div className="results jumps">
+                        {!launched && skCtx.jumpsActive && skCtx.jumpsResults.length > 0 && <div className="cW100p">
+                            <div className="results">
                                 <div className="inner-results">
-                                    <div
+
+                                    {skCtx.jumpsResults.map((result, x) => {
+
+                                        return (
+                                            <div key={x} className={("result") + (activeResult === x ? ' -active' : '')} onClick={() => handleOnResultClick(result, x)}>
+                                                <div>
+                                                    {!authCtx.setting.hideIcons && <img src={`https://www.google.com/s2/favicons?sz=24&domain=${result.d}`} />}
+                                                    <span>{result.d}</span>
+                                                    <span className="shorcutKey">{`${result.s}`.toLowerCase()}</span>
+                                                    {/* <span className="url">{result.d}</span> */}
+                                                </div>
+                                                <div className="resultOptions">
+                                                </div>
+                                            </div>
+                                        );
+
+                                    })}
+
+                                    {/* <div
                                         className={("sec1") + (skCtx.jumpsResults && skCtx.jumpsResults.length > 6 ? " -border" : "")}>
                                         {skCtx.jumpsResults && (skCtx.jumpsResults.slice(0, skCtx.jumpsResults.length > 6 ? 6 : skCtx.jumpsResults.length)).map((result, x) => {
                                             return (
@@ -298,19 +339,19 @@ export default function MainPage() {
                                                 </div>
                                             </div>);
                                         })}
-                                    </div>}
+                                    </div>} */}
                                 </div>
                             </div>
                         </div>}
 
-                        {skCtx.queryResults.length > 0 && <div className="cW100p">
+                        {!launched && authCtx.setting.suggestions && skCtx.queryResults.length > 0 && <div className="cW100p">
                             <div
                                 className="results">
                                 <div className="inner-results">
 
                                     {skCtx.queryResults.map((result, x) => {
                                         return (
-                                            <div key={result.id} className={("result") + (activeResult === x ? ' -active' : '')}>
+                                            <div key={result.id} className={("result") + (activeResult === x ? ' -active' : '')} onClick={() => handleOnResultClick(result, x)}>
                                                 <div>
                                                     {!authCtx.setting.hideIcons && <img src={result.favicon} />}
                                                     <span>{result.shortkey}</span>
@@ -333,7 +374,7 @@ export default function MainPage() {
                             </div>
                         </div>}
 
-                        {(skCtx.queryActive || skCtx.jumpsActive) && (skCtx.queryResults.length < 1) && (skCtx.jumpsResults.length < 1) && <div className="w100p" style={{ marginTop: 10 }}>
+                        {!launched && (skCtx.queryActive || skCtx.jumpsActive) && (skCtx.queryResults.length < 1) && (skCtx.jumpsResults.length < 1) && <div className="w100p" style={{ marginTop: 10 }}>
                             <button onClick={handleCollectClick} className="btn t2 tc">
                                 <span>
                                     <AddIcon />
@@ -343,6 +384,8 @@ export default function MainPage() {
                                 </span>
                             </button>
                         </div>}
+
+                        {launched && <div style={{marginTop: 30}}><BounceLoader showBack={false} className={'--purple'} /></div>}
 
                     </div>
                 </div>

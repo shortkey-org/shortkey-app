@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useReducer, useState } from "react";
 import { useCookies } from 'react-cookie';
 import Settings from "../classes/Settings";
+import ShortkeyManager from "../classes/SkManager";
 import { CookiesArray, CookiesList, LocalStorageKeys } from "../constants/cookies";
 import { BackgroundImagesAvailable } from "../sidebar/settings";
 import { useUI, DialogTabList } from "./UICtx";
@@ -13,6 +14,7 @@ export const AccountType = {
 const defaultSettings = {
     instantLauncher: false,
     addNewShortkeyButton: true,
+    suggestions: true,
     hideProductHunt: false,
     hideIcons: false,
     minimalistic: false,
@@ -23,6 +25,7 @@ const defaultSettings = {
 export const SettingKey = {
     instantLauncher: "instantLauncher",
     addNewShortkeyButton: "addNewShortkeyButton",
+    suggestions: "suggestions",
     hideProductHunt: "hideProductHunt",
     hideIcons: "hideIcons",
     minimalistic: "minimalistic",
@@ -43,6 +46,7 @@ const initialState = {
     setting: {
         instantLauncher: null,
         addNewShortkeyButton: null,
+        suggestions: null,
         hideProductHunt: null,
         hideIcons: null,
         minimalistic: null,
@@ -73,7 +77,9 @@ const AuthContext = createContext({
     ...initialState,
     activateGuestMode: () => {},
     setCookiesAllowed: (data) => {},
-    changeSetting: (key, val) => {}
+    changeSetting: (key, val) => {},
+    setAccessToken: (ac_tk) => {},
+    resetGuestMode: () => {}
 });
 
 function getExpirationTime() {
@@ -110,6 +116,12 @@ function AuthProvider({ children }) {
         return cookies[CookiesList.AccessToken];
     }
 
+    const setAccessToken = (acTk) => {
+        setCookie(CookiesList.AccessToken, acTk, {
+            expires: getExpirationTime()
+        });
+    }
+
     const handleCookies = () => {
 
         console.log("available cookies: ", cookies);
@@ -127,6 +139,7 @@ function AuthProvider({ children }) {
         return {
             instantLauncher: Settings.getInstantLauncher(),
             addNewShortkeyButton: Settings.getAddNewShortkey(),
+            suggestions: Settings.getSuggestions(),
             hideProductHunt: Settings.getHideProductHunt(),
             hideIcons: Settings.getHideIcons(),
             minimalistic: Settings.getMinimalistic(),
@@ -138,11 +151,20 @@ function AuthProvider({ children }) {
     const initDefaultLocalSetting = () => {
         Settings.initInstantLauncher(defaultSettings.instantLauncher);
         Settings.initAddNewShortkey(defaultSettings.addNewShortkeyButton);
+        Settings.initSuggestions(defaultSettings.suggestions);
         Settings.initHideProductHunt(defaultSettings.hideProductHunt);
         Settings.initHideIcons(defaultSettings.hideIcons);
         Settings.initMinimalistic(defaultSettings.minimalistic);
         Settings.initEnableBackgroundPicture(defaultSettings.enableBackgroundPicture);
         Settings.initBackgroundPicture(defaultSettings.backgroundPicture);
+    }
+
+    const removeLocalShortkeys = () => {
+        ShortkeyManager.removeSelf();
+    }
+
+    const removeLocalSetting = () => {
+        Settings.removeSelf();
     }
 
     const changeSetting = (key, val) => {
@@ -153,6 +175,10 @@ function AuthProvider({ children }) {
             
             case SettingKey.addNewShortkeyButton:
                 Settings.setAddNewShortkey(val);
+                break;
+            
+            case SettingKey.suggestions:
+                Settings.setSuggestions(val);
                 break;
             
             case SettingKey.hideProductHunt:
@@ -262,6 +288,14 @@ function AuthProvider({ children }) {
         });
     }
 
+    const resetGuestMode = () => {
+        localStorage.removeItem(CookiesList.AccessTokenLocal);
+        removeCookie(CookiesList.LocalFeatureUsageAlert);
+        removeLocalSetting();
+        removeLocalShortkeys();
+        window.location.reload();
+    }
+
     useEffect(() => {
 
         console.log("initializing authctx");
@@ -273,27 +307,15 @@ function AuthProvider({ children }) {
 
     }, []);
 
-    // useEffect(() => {
-    //     if(state.setting)
-    //     {
-    //         if(state.setting.enableBackgroundPicture && state.setting.backgroundPicture) {
-    //             document.querySelector("body").style.backgroundImage = `url(${state.setting.backgroundPicture})`;
-    //         }
-    //         else
-    //         {
-    //             document.querySelector("body").style.background = '#fff';
-    //         }
-    //     }
-    // }, [state.setting]);
-
-
     return (
         <AuthContext.Provider
             value={{
                 ...state,
                 activateGuestMode,
                 setCookiesAllowed,
-                changeSetting
+                changeSetting,
+                setAccessToken,
+                resetGuestMode
             }}>
             {children}
         </AuthContext.Provider>

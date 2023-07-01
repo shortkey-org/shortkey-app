@@ -709,7 +709,7 @@ export const EditShortkeyDialog = () => {
         /** Support phones */
         let k = e.target.value.charAt(e.target.selectionStart - 1).charCodeAt();
 
-        if (e.key === 'Enter' || e.keyCode === 32 || e.keyCode === 188 || (e.keyCode === 229 && (k === 32 || k === 188))) {
+        if (e.key === 'Enter'/* || e.keyCode === 188 || (e.keyCode === 229 && (k === 32 || k === 188))*/) {
             let tag = (e.target.value || '').trim().toLowerCase().replaceAll(',', '');
             // if (tag.length < 2 || tag.length > 24) {
 
@@ -834,7 +834,9 @@ export const EditShortkeyDialog = () => {
                         return (
                             <span key={tag} title="Remove this tag" className="sk-tag" style={{ margin: 4 }}>
                                 <span>{tag}</span>
-                                <button onClick={handleRemoveTag(i)}>x</button>
+                                <button onClick={handleRemoveTag(i)}>
+                                    <CloseIcon />
+                                </button>
                             </span>
                         );
                     })}
@@ -860,7 +862,8 @@ export const EditShortkeyDialog = () => {
 
 
 export function BounceLoader({
-    className = null
+    className = null,
+    showBack = true
 }) {
 
     const uiCtx = useUI();
@@ -874,17 +877,17 @@ export function BounceLoader({
                 <div className="line"></div>
                 <div className="line"></div>
             </div>
-            <div style={{ marginTop: 20 }}>
+            {uiCtx.data['loadText'] && <div style={{ marginTop: 20 }}>
                 <span>{uiCtx.data['loadText']}</span>
-            </div>
-            <div style={{ position: 'absolute', bottom: 60 }}>
+            </div>}
+            {showBack && <div style={{ position: 'absolute', bottom: 60 }}>
                 <button onClick={() => window.location.assign('/')} className="btnIco label">
                     <span style={{ marginRight: 6 }}>
                         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-160 160-480l320-320 57 56-224 224h487v80H313l224 224-57 56Z" /></svg>
                     </span>
                     <span className="text">Back</span>
                 </button>
-            </div>
+            </div>}
         </>
     );
 }

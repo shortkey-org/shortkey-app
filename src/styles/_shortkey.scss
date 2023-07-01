@@ -154,6 +154,11 @@
 
                         max-width: 120px;
 
+                        &.r3 {
+                            max-width: 100%;
+                            width: 100%;
+                        }
+
                         >.text {
                             width: 100%;
                             text-overflow: ellipsis;
@@ -165,6 +170,22 @@
                             width: 100%;
                             overflow: hidden;
                             text-overflow: ellipsis;
+                        }
+
+                        >.combined {
+                            width: 90%;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        
+                            > span:first-child {
+                                margin-right: 12px;
+                            }
+
+                            > span {
+                                &.title {
+                                    color: var(--color-deep-violet);
+                                }
+                            }
                         }
 
                         &.--tag {
@@ -299,8 +320,8 @@
     }
 
     > button {
-        width: 16px;
-        height: 16px;
+        width: 12px;
+        height: 12px;
         border-radius: 40px;
         background: #ffffff;
         border: none;
@@ -310,5 +331,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
+        &:hover {
+            opacity: 0.7;
+        }
     }
 }
