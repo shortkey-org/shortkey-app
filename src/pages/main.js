@@ -122,6 +122,7 @@ export default function MainPage() {
                 if (q.length > 0 && q[1].length > 0) {
                     q1 = q1.replace("{{{s}}}", (e.target.value || "").replace(q[0], ""));
                     //     // q = `?query=${(e.target.value || "").replace(q[0], "")}`;
+                    // https://duckduckgo.com/?q=%21yt+example
                 }
                 else {
                     q1 = `https://${skCtx.jumpsResults[0].d}`;
@@ -154,8 +155,6 @@ export default function MainPage() {
             if (!document.activeElement || (document.activeElement.tagName !== 'INPUT')) {
                 console.log(uiCtx.sidemenu_active)
                 if (uiCtx.sidemenu_active) {
-                    // uiCtx.setSidemenuVisibility(false);
-
                     return;
                 }
                 if (uiCtx.dialog_visible) {
@@ -185,12 +184,6 @@ export default function MainPage() {
         }
     }, [skCtx.queryResults]);
 
-    // useEffect(() => {
-    //     if(skCtx.queryResults.length < 0 && skCtx.queryActive)
-    //     {
-    //         /** Find in global data for jumps */
-    //     }
-    // }, [skCtx.queryResults, skCtx.queryActive]);
 
     const handleEditClick = (sk) => (e) => {
         uiCtx.setData({

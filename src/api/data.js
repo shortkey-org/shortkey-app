@@ -56,8 +56,11 @@ export async function searchJumpsData(query) {
 
     let i = 0;
     while (i < data.length) {
-        if(data[i].s.toLowerCase().startsWith(q.toLowerCase())) {
-            results.push([i, ((data[i].s.length) - q.length)])
+        // if(data[i].s.toLowerCase().startsWith(q.toLowerCase())) {
+        //     results.push([i, ((data[i].s.length) - q.length)])
+        // }
+        if(data[i].t.toLowerCase().startsWith(q.toLowerCase())) {
+            results.push([i, ((data[i].t.length) - q.length)])
         }
         i++;
     }
