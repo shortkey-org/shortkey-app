@@ -85,6 +85,8 @@
                 width: 100%;
                 height: auto;
 
+                height: 100%;
+
                 > .inner-sidebar-ct
                 {
                     width: 100%;
@@ -97,6 +99,8 @@
                     flex-direction: column;
                     justify-content: flex-start;
                     align-items: flex-start;
+
+                    position: relative;
 
                     &.-wrp-80
                     {

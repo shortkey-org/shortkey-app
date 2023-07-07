@@ -373,7 +373,7 @@ export default function MainPage() {
                                     <AddIcon />
                                 </span>
                                 <span>
-                                    Collect Shortkey
+                                    Collect
                                 </span>
                             </button>
                         </div>}

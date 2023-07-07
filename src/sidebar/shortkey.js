@@ -158,23 +158,11 @@ const Shortkey = ({
                                 <span>Edit</span>
                         </div>
 
-                        <div className="--seprator"></div>
-
                         <div
                             onClick={handleOnDeleteClick}
                             className="popupButton">
                                 {deleteActive ? <span style={{color: 'rgb(195 37 37)'}}>Are you sure?</span> : <span>Delete</span>}
                         </div>
-
-
-                    {/* <Button onClick={handleOnEditClick} type={ButtonTypes.normal_noborder} icon={IconsList.Edit} className={'--align-left mb-4 --block-size'} text={`Edit`} />
-                    {authCtx.authenciated && authCtx.account_type === AccountType.Remote && <Button onClick={handleAddToCommunikeyClick} title={"Contrubute it to communikey"} type={ButtonTypes.normal_noborder} icon={IconsList.Groups3} className={'--align-left mb-4 --block-size'} text={`Publish in communikey`} />}
-
-                    {authCtx.authenciated && authCtx.account_type === AccountType.Remote && type === ShortkeyType.Local && <Button onClick={handleAddToCommunikeyClick} title={"Move it to account"} type={ButtonTypes.normal_noborder} icon={IconsList.Add} className={'--align-left mb-4 --block-size'} text={`Move to account`} />}
-
-                    <div className="--seprator"></div>
-
-                    <Button onClick={handleOnDeleteClick} type={ButtonTypes.normal_noborder} icon={IconsList.Delete} className={'--align-left --block-size'} text={deleteActive ? `Are you sure?` : `Delete`} /> */}
 
                 </PopupMenu>
 

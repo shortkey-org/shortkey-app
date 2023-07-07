@@ -112,7 +112,7 @@ export default function ShortkeysTab() {
                                 <AddIcon />
                             </span>
                             <span>
-                                Collect Shortkey
+                                Collect
                             </span>
                         </button>
                     </div>

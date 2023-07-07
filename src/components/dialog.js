@@ -555,6 +555,9 @@ export const AddShortkeyDialog = () => {
     const handleShortkeyKeyUp = async (e) => {
         if(e.key === 'Enter') {
             urlInput.current.focus();
+            if(e && e.target.value && e.target.value.length > 0) {
+                setTags([...tags, e.target.value]);
+            }
         }
     }
 
