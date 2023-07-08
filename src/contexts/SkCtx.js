@@ -291,7 +291,8 @@ function SkProvider({ children }) {
         }
 
         const searchInJumps = async () => {
-            let results = await searchJumpsData(query);
+            console.log(query)
+            let results = (query.length > 1 && query[0] === '!') ? (await searchJumpsData(query)) : [];
             dispatch({
                 type: 'DATA',
                 payload: {

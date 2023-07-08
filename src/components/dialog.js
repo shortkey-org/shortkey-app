@@ -635,7 +635,7 @@ export const AddShortkeyDialog = () => {
                 </div>
 
                 <div style={{ marginTop: 30 }} className="col cW100p cFlex row jcenter acenter">
-                    <button disabled={!createdShortkey} className="btn t2 tc" onClick={handleDelete}>
+                    <button className="btn t2 tc" onClick={handleDelete}>
                         <span style={{ marginRight: 12 }}>
                             <DeleteIcon />
                         </span>

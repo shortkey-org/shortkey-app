@@ -6,9 +6,11 @@ export const ShortkeyStatus = {
     SyncNeeded: 'unsynced'
 }
 
+
 class ShortkeyManager {
     static KEY = 'shortkeys';
     static INIT_KEY = 'initialized';
+    static G_LIMIT = 400;
 
     constructor() {
         let initData = localStorage.getItem(ShortkeyManager.INIT_KEY);
@@ -70,16 +72,19 @@ class ShortkeyManager {
         return shortkeys ? JSON.parse(shortkeys) : [];
     }
 
-    static getShortkeys(offset = 0, limit = 10) {
+    static getShortkeys(offset = 0, limitx = 10) {
+        let limit = ShortkeyManager.G_LIMIT;
         const shortkeys = localStorage.getItem(this.KEY);
         const parsedShortkeys = shortkeys ? JSON.parse(shortkeys) : [];
 
-        const endIndex = offset + limit;
-        const paginatedShortkeys = parsedShortkeys.slice(offset, endIndex);
+        // const endIndex = offset + limit;
+        // const paginatedShortkeys = parsedShortkeys.slice(offset, endIndex);
+        const paginatedShortkeys = parsedShortkeys;
         return paginatedShortkeys;
     }
 
-    static searchShortkeys(query, offset = 0, limit = 10) {
+    static searchShortkeys(query, offset = 0, limitx = 10) {
+        let limit = ShortkeyManager.G_LIMIT;
         const shortkeys = this.getShortkeys();
         const filteredShortkeys = shortkeys.filter(shortkey => {
             const matchShortkey = shortkey.shortkey.toLowerCase().includes(query.toLowerCase());
@@ -87,21 +92,35 @@ class ShortkeyManager {
             return matchShortkey || matchTag;
         });
 
+        // const startIndex = offset * limit;
+        // const endIndex = startIndex + limit;
+        // const paginatedShortkeys = filteredShortkeys.slice(startIndex, endIndex);
+        const paginatedShortkeys = filteredShortkeys;
+        return paginatedShortkeys;
+    }
+
+    static findShortkeys(query) {
+        // const shortkeys = this.getShortkeys();
+        // const matchedShortkeys = shortkeys.filter((shortkey) => {
+        //     const firstLetters = shortkey.shortkey.substr(0, query.length).toLowerCase();
+        //     return firstLetters === query.toLowerCase();
+        // });
+        // const topMatches = matchedShortkeys.slice(0, 6); // Limit to the top 6 matches
+        // return topMatches;
+        let offset = 0;
+        let limit = 6;
+        const shortkeys = this.getShortkeys();
+        const filteredShortkeys = shortkeys.filter(shortkey => {
+            const matchShortkey = shortkey.shortkey.toLowerCase().includes(query.toLowerCase());
+            const matchTag = shortkey.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()));
+            return matchShortkey || matchTag;
+        });
         const startIndex = offset * limit;
         const endIndex = startIndex + limit;
         const paginatedShortkeys = filteredShortkeys.slice(startIndex, endIndex);
 
         return paginatedShortkeys;
-    }
 
-    static findShortkeys(query) {
-        const shortkeys = this.getShortkeys();
-        const matchedShortkeys = shortkeys.filter((shortkey) => {
-            const firstLetters = shortkey.shortkey.substr(0, query.length).toLowerCase();
-            return firstLetters === query.toLowerCase();
-        });
-        const topMatches = matchedShortkeys.slice(0, 6); // Limit to the top 6 matches
-        return topMatches;
     }
 
 

@@ -150,6 +150,11 @@
                 justify-content: flex-start;
                 align-items: center;
 
+                &.resultContent {
+                    width: 100%;
+                    height: 100%;
+                }
+
                 img {
                     height: 24px;
                     width: 24px;

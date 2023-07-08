@@ -143,11 +143,11 @@ export default function MainPage() {
     useEffect(() => {
 
         const onKeyPress = (e) => {
-            console.log(e)
+            let aR = authCtx.setting.suggestions ? activeResult : 0;
             if (e.key === 'Enter') {
-                if (skCtx.queryResults && skCtx.queryResults.length > 0 && activeResult > -1 && authCtx.setting.suggestions) {
+                if (skCtx.queryResults && skCtx.queryResults.length > 0 && aR > -1 && authCtx.setting.suggestions) {
                     if (!uiCtx.sidemenu_active && !uiCtx.dialog_visible) {
-                        let result = skCtx.queryResults[activeResult];
+                        let result = skCtx.queryResults[aR];
                         navigate(result.label, `${result.url}`)
                     }
                 }
@@ -172,7 +172,7 @@ export default function MainPage() {
         return () => {
             document.removeEventListener("keypress", onKeyPress);
         }
-    }, [uiCtx.sidemenu_active, skCtx.queryResults]);
+    }, [/* @FIX_THIS::: uiCtx.sidemenu_active, */skCtx.queryResults]);
 
     useEffect(() => {
         console.log("Active result: ", activeResult);
@@ -294,8 +294,8 @@ export default function MainPage() {
                                             <div key={x} className={("result") + (activeResult === x ? ' -active' : '')} onClick={() => handleOnResultClick(result, x)}>
                                                 <div>
                                                     {!authCtx.setting.hideIcons && <img src={`https://www.google.com/s2/favicons?sz=24&domain=${result.d}`} />}
-                                                    <span>{result.d}</span>
-                                                    <span className="shorcutKey">{`${result.s}`.toLowerCase()}</span>
+                                                    <span>{result.s}</span>
+                                                    <span className="shorcutKey">{`${result.t}`.toLowerCase()}</span>
                                                     {/* <span className="url">{result.d}</span> */}
                                                 </div>
                                                 <div className="resultOptions">
@@ -344,8 +344,8 @@ export default function MainPage() {
 
                                     {skCtx.queryResults.map((result, x) => {
                                         return (
-                                            <div key={result.id} className={("result") + (activeResult === x ? ' -active' : '')} onClick={() => handleOnResultClick(result, x)}>
-                                                <div>
+                                            <div key={result.id} className={("result") + (activeResult === x ? ' -active' : '')}>
+                                                <div className="resultContent" onClick={() => handleOnResultClick(result, x)}>
                                                     {!authCtx.setting.hideIcons && <img src={result.favicon} />}
                                                     <span>{result.shortkey}</span>
                                                     <span className="url">{result.url}</span>
@@ -367,7 +367,7 @@ export default function MainPage() {
                             </div>
                         </div>}
 
-                        {!launched && (skCtx.queryActive || skCtx.jumpsActive) && (skCtx.queryResults.length < 1) && (skCtx.jumpsResults.length < 1) && <div className="w100p" style={{ marginTop: 10 }}>
+                        {!launched && authCtx.setting.addNewShortkeyButton && (skCtx.queryActive || skCtx.jumpsActive) && (skCtx.queryResults.length < 1) && (skCtx.jumpsResults.length < 1) && <div className="w100p" style={{ marginTop: 10 }}>
                             <button onClick={handleCollectClick} className="btn t2 tc">
                                 <span>
                                     <AddIcon />
