@@ -62,6 +62,15 @@ const Shortkey = ({
         setMenuPopupVisible(false);
     }
 
+    const handleTitleClick = handleOnEditClick;
+
+    const handleTagClick = (tagName) => (e) => {
+        uiCtx.setSidemenuVisibility(false);
+        uiCtx.setData({
+            clickedTag: tagName
+        });
+    }
+
     const handleOnDeleteClick = async (e) => {
         if (!deleteActive) {
             setDeleteActive(true);
@@ -90,7 +99,7 @@ const Shortkey = ({
                         <div
                             className="r r3">
                                 <span className="combined">
-                                    <span className="title">{title}</span>
+                                    <span onClick={handleTitleClick} className="title">{title}</span>
                                     <a href={link} className="link">{link}</a>
                                 </span>
                         </div>
@@ -124,7 +133,7 @@ const Shortkey = ({
                                 </div>);
                             }
 
-                            return (<div key={i} className="r r2 sk-tag">
+                            return (<div key={i} className="r r2 sk-tag" onClick={handleTagClick(tag)}>
                                 <span className="text">{tag}</span>
                             </div>);
 

@@ -170,6 +170,7 @@
                         }
 
                         >.title {
+                            cursor: pointer;
                             width: 100%;
                             overflow: hidden;
                             text-overflow: ellipsis;
@@ -186,6 +187,7 @@
 
                             > span {
                                 &.title {
+                                    cursor: pointer;
                                     color: var(--color-deep-violet);
                                 }
                             }

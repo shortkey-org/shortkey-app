@@ -476,15 +476,6 @@ export const AddShortkeyDialog = () => {
     const handleAdd = async (e) => {
         let shortkey = shortkeyInput.current.value;
         let url = urlInput.current.value;
-        // let tags_i = tagsInput.current.value;
-        // let tags = [];
-
-        // ((tags_i || "").split(",")).map((tag) => {
-        //     if(tag.trim() && tag.trim().length > 0)
-        //     {
-        //         tags.push(tag.trim());
-        //     }
-        // })
 
         if ((shortkey || "").trim().length < 1 || (url || "").trim().length < 1) {
             return;
@@ -554,7 +545,7 @@ export const AddShortkeyDialog = () => {
 
     const handleShortkeyKeyUp = async (e) => {
         if(e.key === 'Enter') {
-            urlInput.current.focus();
+            urlInput.current?.focus();
             if(e && e.target.value && e.target.value.length > 0) {
                 setTags([...tags, e.target.value]);
             }
@@ -569,7 +560,7 @@ export const AddShortkeyDialog = () => {
 
     const handleURLKeyUp = async (e) => {
         if(e.key === 'Enter') {
-            tagsInput.current.focus();
+            tagsInput.current?.focus();
         }
     }
 
@@ -584,6 +575,13 @@ export const AddShortkeyDialog = () => {
             createShortkey();
         }
     }, [tags]);
+
+    useEffect(() => {
+        if(uiCtx.data && uiCtx.data['newShortkeyValue']) {
+            setTags([...tags || [], uiCtx.data['newShortkeyValue']]);
+            urlInput.current?.focus();
+        }
+    }, [uiCtx.data]);
 
     return (
         <>
@@ -772,7 +770,7 @@ export const EditShortkeyDialog = () => {
 
     const handleShortkeyKeyUp = async (e) => {
         if(e.key === 'Enter') {
-            urlInput.current.focus();
+            urlInput.current?.focus();
         }
     }
 
@@ -784,7 +782,7 @@ export const EditShortkeyDialog = () => {
 
     const handleURLKeyUp = async (e) => {
         if(e.key === 'Enter') {
-            tagsInput.current.focus();
+            tagsInput.current?.focus();
         }
     }
 

@@ -3,6 +3,7 @@ import Input from "../components/input";
 import { useSk } from "../contexts/SkCtx";
 import { DialogTabList, useUI } from "../contexts/UICtx";
 import AddIcon from "../icons/Add";
+import CloseIcon from "../icons/Close";
 import SearchIcon from "../icons/Search";
 import SidebarContent from "./content";
 import SidebarHeader from "./hdr";
@@ -16,6 +17,7 @@ export default function ShortkeysTab() {
     const searchBarRef = useRef(null);
 
     const [focused, setFocused] = useState(false);
+    const [showClearIcon, setShowClearIcon] = useState(false);
 
     const handleAddClick = (e) => {
         uiCtx.setAny({
@@ -28,7 +30,21 @@ export default function ShortkeysTab() {
         if(e.target.value.length < 1) {
             searchBarRef.current.blur();
         }
+        if(e.target.value.length > 0) {
+            setShowClearIcon(true);
+        }
+        else
+        {
+            setShowClearIcon(false);
+        }
         skCtx.searchShortkeys(e.target.value);
+    }
+
+    const handleClearSearchClick = (e) => {
+        searchBarRef.current.value = '';
+        skCtx.searchShortkeys('');
+        setFocused(false);
+        setShowClearIcon(false);
     }
 
     useEffect(() => {
@@ -71,27 +87,22 @@ export default function ShortkeysTab() {
 
                 <div className="skeys-hdr-container">
                     <div>
-                        <Input ref={searchBarRef} onFocus={handleOnFocus} onBlur={handleOnBlur} autoFocus={false} onChange={handleChangeInSearch} className={'--block-size'} htmlType={"search"} placeholder="Search for Shortkeys and Keywords" icon={null}>
-                            {/* <SearchIcon style={{ marginRight: 8 }} /> */}
-                            {!focused && <button style={{borderRadius: 0, padding: "0 8px", paddingRight: 16}} onClick={handleAddClick} className="btn t2">
+                        <Input ref={searchBarRef} onFocus={handleOnFocus} onBlur={handleOnBlur} autoFocus={false} onChange={handleChangeInSearch} className={'--block-size'} htmlType={"text"} placeholder="Search for Shortkeys and Keywords" icon={null}>
+                            {showClearIcon && <button onClick={handleClearSearchClick} className="btnIco" style={{marginRight: 2}}>
+                                <span style={{transform: "scale(0.8)"}}>
+                                    <CloseIcon />
+                                </span>
+                            </button>}
+                            {!focused && !showClearIcon && <button style={{borderRadius: 0, padding: "0 8px", paddingRight: 16}} onClick={handleAddClick} className="btn t2">
                                 <span style={{marginRight: 6}}>
                                     <AddIcon />
                                 </span>
-                                <span>
+                                <span className="fix-text-base">
                                     Collect
                                 </span>
                             </button>}
                         </Input>
                     </div>
-                    {/* <div className="--auto-w">
-                        <button
-                            onClick={handleAddClick}
-                            className="btnIco icoB">
-                            <span>
-                                <AddIcon />
-                            </span>
-                        </button>
-                    </div> */}
                 </div>
 
                 <div className="skeys-wrapper">
@@ -111,7 +122,7 @@ export default function ShortkeysTab() {
                             <span style={{marginRight: 6}}>
                                 <AddIcon />
                             </span>
-                            <span>
+                            <span className="fix-text-base">
                                 Collect
                             </span>
                         </button>

@@ -54,16 +54,24 @@ export default function MainPage() {
         window.location.assign(u);
     }
 
+    useEffect(() => {
+        const handlePopState = () => {
+            console.log("Launched ::: ", launched);
+            if (launched) {
+              setLaunched(false);
+            }
+          };
+      
+          window.addEventListener('beforeunload', handlePopState);
+      
+          return () => {
+            window.removeEventListener('beforeunload', handlePopState);
+          };
+    }, [launched]);
+
     const handleKeyUp = (e) => {
-        // if(e.target.value > 0) {
-        //     console.log("AS")
-        //     setSearchActive(true);
-        // }
-        // else
-        // {
-        //     console.log("Am")
-        //     setSearchActive(false);
-        // }
+
+        setActiveResult(0);
 
         if ((e.target.value || "").trim().length < 1) {
             if (e.key === ' ') {
@@ -92,11 +100,21 @@ export default function MainPage() {
                     setActiveResult(0);
                 }
             }
-            else {
-                if (activeResult) {
+            else if(skCtx.jumpsActive) {
+                if(activeResult < skCtx.jumpsResults.length - 1) {
+                    setActiveResult(activeResult + 1);
+                }
+                else
+                {
                     setActiveResult(0);
                 }
             }
+            // else {
+            //     if (activeResult) {
+            //         setActiveResult(0);
+            //     }
+            // }
+            return;
         }
         else if (e.keyCode === 38) {
             e.preventDefault();
@@ -108,18 +126,29 @@ export default function MainPage() {
                     setActiveResult(skCtx.queryResults.length - 1);
                 }
             }
-            else {
-                if (activeResult) {
+            else if(skCtx.jumpsActive) {
+                if(activeResult < skCtx.jumpsResults.length - 1) {
+                    setActiveResult(activeResult + 1);
+                }
+                else
+                {
                     setActiveResult(0);
                 }
             }
+            // else {
+            //     if (activeResult) {
+            //         setActiveResult(0);
+            //     }
+            // }
+            return;
         }
         else if (e.key === 'Enter') {
+            e.preventDefault();
             if (skCtx.jumpsActive && skCtx.jumpsResults.length > 0) {
                 let q = (e.target.value || "").split(" ");
-                // let q1 = skCtx.jumpsResults[0].url;
-                let q1 = skCtx.jumpsResults[0].u;
-                if (q.length > 0 && q[1].length > 0) {
+                let q1 = skCtx.jumpsResults[activeResult || 0].u;
+
+                if (q.length > 1 && q[1].length > 0) {
                     q1 = q1.replace("{{{s}}}", (e.target.value || "").replace(q[0], ""));
                     //     // q = `?query=${(e.target.value || "").replace(q[0], "")}`;
                     // https://duckduckgo.com/?q=%21yt+example
@@ -129,8 +158,11 @@ export default function MainPage() {
                 }
                 navigate(skCtx.jumpsResults[0].label, `${q1}`)
             }
+            return;
         }
+
         skCtx.findShortkeys(e.target.value);
+        // finderRef.current.setSelectionRange(e.target.value.length, e.target.value.length);
     }
 
     const handleClearFinder = (e) => {
@@ -143,9 +175,13 @@ export default function MainPage() {
     useEffect(() => {
 
         const onKeyPress = (e) => {
+            console.log("key pressed!")
+            // setActiveResult(0)
             let aR = authCtx.setting.suggestions ? activeResult : 0;
+            console.log("Ar ::: ", aR)
+            console.log("QueryResults ::: ", skCtx.queryResults);
             if (e.key === 'Enter') {
-                if (skCtx.queryResults && skCtx.queryResults.length > 0 && aR > -1 && authCtx.setting.suggestions) {
+                if (skCtx.queryResults && skCtx.queryResults.length > 0 && aR > -1) {
                     if (!uiCtx.sidemenu_active && !uiCtx.dialog_visible) {
                         let result = skCtx.queryResults[aR];
                         navigate(result.label, `${result.url}`)
@@ -179,6 +215,7 @@ export default function MainPage() {
     }, [activeResult]);
 
     useEffect(() => {
+        console.log(skCtx.queryResults)
         if (skCtx.queryActive && skCtx.queryResults && skCtx.queryResults.length === 1 && authCtx.setting.instantLauncher) {
             navigate(skCtx.queryResults[0].shortkey, skCtx.queryResults[0].url);
         }
@@ -196,7 +233,6 @@ export default function MainPage() {
     }
 
     const handleCollectClick = (e) => {
-        console.log("Collect clicked");
         uiCtx.setData({
             newShortkeyValue: finderRef.current.value
         });
@@ -218,6 +254,14 @@ export default function MainPage() {
             }, 60);
         }
     }, [uiCtx.sidemenu_active, uiCtx.dialog_visible]);
+
+    useEffect(() => {
+        if(uiCtx.data && uiCtx.data['clickedTag'] && finderRef.current) {
+            finderRef.current.value = uiCtx.data['clickedTag'];
+            finderRef.current.focus();
+            finderRef.current.setSelectionRange(uiCtx.data['clickedTag'].length, uiCtx.data['clickedTag'].length);
+        }
+    }, [uiCtx.data]);
 
     const handleOnResultClick = (result, x) => {
         navigate(result.label, `${result.url}`)
@@ -296,7 +340,6 @@ export default function MainPage() {
                                                     {!authCtx.setting.hideIcons && <img src={`https://www.google.com/s2/favicons?sz=24&domain=${result.d}`} />}
                                                     <span>{result.s}</span>
                                                     <span className="shorcutKey">{`${result.t}`.toLowerCase()}</span>
-                                                    {/* <span className="url">{result.d}</span> */}
                                                 </div>
                                                 <div className="resultOptions">
                                                 </div>
@@ -305,34 +348,6 @@ export default function MainPage() {
 
                                     })}
 
-                                    {/* <div
-                                        className={("sec1") + (skCtx.jumpsResults && skCtx.jumpsResults.length > 6 ? " -border" : "")}>
-                                        {skCtx.jumpsResults && (skCtx.jumpsResults.slice(0, skCtx.jumpsResults.length > 6 ? 6 : skCtx.jumpsResults.length)).map((result, x) => {
-                                            return (
-                                                <div key={x} className="result">
-                                                    <div>
-                                                        <span>{(result.s) + (` (${result.sc})`)}</span>
-                                                    </div>
-                                                    <div>
-                                                        <span>{result.d}</span>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                    {skCtx.jumpsResults && skCtx.jumpsResults.length > 6 && <div
-                                        className="sec2">
-                                        {skCtx.jumpsResults.slice(6, skCtx.jumpsResults.length > 11 ? 11 : skCtx.jumpsResults.length).map((result, x) => {
-                                            return (<div key={x} className="result">
-                                                <div>
-                                                    <span>{(result.s) + (` (${result.sc})`)}</span>
-                                                </div>
-                                                <div>
-                                                    <span>{result.d}</span>
-                                                </div>
-                                            </div>);
-                                        })}
-                                    </div>} */}
                                 </div>
                             </div>
                         </div>}
@@ -372,13 +387,13 @@ export default function MainPage() {
                                 <span>
                                     <AddIcon />
                                 </span>
-                                <span>
+                                <span className="fix-text-base">
                                     Collect
                                 </span>
                             </button>
                         </div>}
 
-                        {launched && <div style={{marginTop: 30}}><BounceLoader showBack={false} className={'--purple'} /></div>}
+                        {launched && <div style={{ marginTop: 30 }}><BounceLoader showBack={false} className={'--purple'} /></div>}
 
                     </div>
                 </div>
